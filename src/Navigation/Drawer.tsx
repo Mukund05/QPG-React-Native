@@ -179,7 +179,7 @@ const DrawerLayout: React.FC<{
 };
 
 const DrawerItemList: React.FC = () => {
-  const {role} = useSelector((state: any) => state.user.user);
+  const {role} = useSelector((state: any) => state?.user?.user);
 
   //check user role and show drawer list accordingly
   return DrawerList.map((item, index) => {

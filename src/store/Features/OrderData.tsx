@@ -5,6 +5,7 @@ const initialState = {
     loader: true
 }
 
+//used for storing history of placed orders
 const orderDataSlice = createSlice({
     name: 'orderData',
     initialState,

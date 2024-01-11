@@ -167,7 +167,7 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
       <View style={styles.bottomContainer}>
         <TouchableOpacity style={styles.bottomBut} onPress={()=>{navigation.navigate('Order Page')}}>
           <View>
-            <Text style={styles.bottomText}>Add School</Text>
+            <Text style={styles.bottomText}>Add Orders</Text>
           </View>
         </TouchableOpacity>
       </View>

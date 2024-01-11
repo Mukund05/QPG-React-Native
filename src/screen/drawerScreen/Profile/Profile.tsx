@@ -205,6 +205,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
             onChangeText={setContactNo}
             placeholder="Contact No"
             placeholderTextColor="black"
+            editable={false}
           />
           <TextInput
             style={styles.input}

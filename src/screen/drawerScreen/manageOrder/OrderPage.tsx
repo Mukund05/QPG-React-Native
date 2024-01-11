@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Header from '../../../utils/Header';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {fetchtoken} from '../../../utils/fetchItem';
+import {fetchUser, fetchtoken} from '../../../utils/fetchItem';
 import {
   getAllSchools,
   getClasses,
@@ -21,6 +21,10 @@ import {
   getSubjects,
 } from '../../../api/api';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
+import {useDispatch} from 'react-redux';
+import {addOrder} from '../../../store/Features/OrderSlice';
+import {useToast} from 'react-native-toast-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
   const [schoolName, setSchoolName] = useState<any>('');
@@ -40,6 +44,8 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
 
   const [total, setTotal] = useState<string>('');
 
+  const dispatch = useDispatch();
+  const toast = useToast();
   // Fetch Token
   const getToken = async () => {
     try {
@@ -124,7 +130,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     navigation.navigate('Order Details');
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!price) {
       Alert.alert('Please Select Class and Subject');
       return;
@@ -141,6 +147,69 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
       Alert.alert('Please Enter Valid Discount');
       return;
     }
+
+    const data = createData();
+
+    // Retrieve existing data from AsyncStorage based on the user ID
+    const {id} = await fetchUser(); // You need to implement a function to get the user ID
+
+    try {
+      const existingData = await AsyncStorage.getItem(id.toString());
+      let newData = [];
+      if (existingData) {
+        // If there is existing data, parse it and append the new data
+        newData = JSON.parse(existingData);
+      }
+      newData.push(data);
+
+      // Save the updated data to AsyncStorage
+      await AsyncStorage.setItem(id.toString(), JSON.stringify(newData));
+    } catch (error) {
+      // Handle the error appropriately, e.g., show an alert
+      console.error('Error saving data to AsyncStorage:', error);
+      toast.show('Error Saving Data', {
+        type: 'danger',
+        style: {width: '90%'},
+      });
+    }
+
+    dispatch(addOrder(data)); //dispatch the data inside orderSlice
+    console.log(data);
+
+    setSchoolName('');
+    setClassName('');
+    setSubject('');
+    setDiscount('');
+    setPrice('');
+    setQuantity('1');
+    setTotal('');
+
+    toast.show('Book Added Successfully', {
+      type: 'success',
+      style: {width: '90%'},
+    });
+  };
+
+  const createData = () => {
+    const data: any = {};
+    data['SchoolItem'] = {
+      label: schoolName,
+      value: school.filter((item: any) => item.name === schoolName)[0].id,
+    };
+    data['ClassItem'] = {
+      label: className,
+      value: classID,
+    };
+
+    data['SubjecItem'] = {
+      label: subject,
+      value: subjectId,
+    };
+
+    (data['quantity'] = Number(quantity)),
+      (data['discount'] = discount),
+      (data['mrp'] = price);
+    return data;
   };
 
   const handleQuantityUpdate = (type: string) => {
@@ -356,7 +425,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
             </TouchableOpacity>
           </View>
 
-          {price !== '' && (
+          {subject != '' && price !== '' && (
             <View style={styles.priceContainer}>
               <View style={styles.priceTable}>
                 <View style={styles.tableRow}>
