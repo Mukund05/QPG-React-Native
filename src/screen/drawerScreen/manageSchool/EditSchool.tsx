@@ -27,7 +27,7 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
 
   const validateEmail = (val: any) => {
     // Regular expression for a valid email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (emailRegex.test(val)) {
       // Email is valid
@@ -55,6 +55,14 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
       ) {
         // Alert if any required field is empty
         toast.show('Please fill all the fields.', {
+          type: 'danger',
+          style: {width: '90%'},
+        });
+        return;
+      }
+
+      if(formData.contact_no.length!==10) {
+        toast.show('Please enter a valid contact number.', {
           type: 'danger',
           style: {width: '90%'},
         });
