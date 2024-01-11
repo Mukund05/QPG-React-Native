@@ -10,23 +10,37 @@ import {TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {fetchUser} from '../../../utils/fetchItem';
+import { deleteOrder } from '../../../store/Features/OrderSlice';
 
 const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
-  const orders = useSelector((state:any) => state?.order?.order);
+  const [data, setData] = React.useState<any>(null);
+  const dispatch=useDispatch();
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const { id } = await fetchUser();
+        const {id} = await fetchUser();
         const orderData = await AsyncStorage.getItem(id.toString());
         console.log('ORDER DETAILS::ORDER DATA', orderData);
+        setData(JSON.parse(orderData as any));
       } catch (error) {
         console.log('ORDER DETAILS::ERROR IN GETTING DATA', error);
       }
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    // Calculate the total amount based on the subtotals of all items
+    if (data) {
+      const total = data.reduce(
+        (sum: number, item: any) => sum + parseFloat(subTotal(item.mrp.mrp, item.quantity, item.discount)),
+        0
+      );
+      setTotalAmount(total.toFixed(2));
+    }
+  }, [data]);
 
   const handleQuantityUpdate = (type: string) => {
     if (type === 'increment') {
@@ -49,6 +63,10 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
     return roundedFinalAmount.toString();
   };
 
+  const handleDeleteItem = (itemId: string) => {
+    dispatch(deleteOrder(itemId));
+  };
+
   return (
     <>
       <Header
@@ -65,21 +83,21 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
             <Text style={styles.header}>No Order Details</Text>
           )}
 
-          {data.map((item: any) => (
-            <View style={styles.orderCard} >
+          {data?.map((item: any,index:any) => ( 
+            <View style={styles.orderCard} key={index}>
               <View style={styles.icon}>
-                <Icon name="delete" size={25} color="red" />
+                <Icon name="delete" size={25} color="red" onPress={()=>handleDeleteItem(item.id)}/>
               </View>
               <View style={styles.details}>
                 <View style={styles.field}>
                   <Text style={styles.label}>School Name :</Text>
                   <Text style={styles.value} numberOfLines={1}>
-                    Bal Bharti School Vidya Public School
+                    {item.SchoolItem.label}
                   </Text>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>Class Name :</Text>
-                  <Text style={styles.value}>Class 4th </Text>
+                  <Text style={styles.value}>{item.ClassItem.label} </Text>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>Subject Name :</Text>
@@ -87,12 +105,12 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                     style={styles.value}
                     numberOfLines={1}
                     ellipsizeMode={'tail'}>
-                    तनुश्री हिंदी मीनिंग
+                    {item.SubjecItem.label}
                   </Text>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>Actual Price :</Text>
-                  <Text style={styles.value}>₹40000 </Text>
+                  <Text style={styles.value}>₹ {item.mrp.mrp} </Text>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>Qunatity :</Text>
@@ -102,7 +120,7 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                       style={[styles.circleIcon, {marginEnd: 15}]}>
                       <Icon name="horizontal-rule" size={20} color="black" />
                     </TouchableOpacity>
-                    <Text style={styles.value}>230</Text>
+                    <Text style={styles.value}>{item.quantity}</Text>
                     <TouchableOpacity
                       style={[styles.circleIcon, {marginStart: 15}]}
                       onPress={() => handleQuantityUpdate('increment')}>
@@ -112,11 +130,11 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>Discount :</Text>
-                  <Text style={styles.value}>80% </Text>
+                  <Text style={styles.value}>{item.discount}% </Text>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>SubTotal :</Text>
-                  <Text style={styles.value}>₹88987.00 </Text>
+                  <Text style={styles.value}>₹ {subTotal(item.mrp.mrp,item.quantity,item.discount)} </Text>
                 </View>
               </View>
             </View>

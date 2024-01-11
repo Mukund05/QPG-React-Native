@@ -254,7 +254,7 @@ const StackNavigation = () => {
 
 const DrawerContent: React.FC = props => {
   const user = useSelector((state: any) => state.user?.user);
-
+  // console.log(user)
   const navigation = useNavigation();
   return (
     <View style={{flex: 1}}>

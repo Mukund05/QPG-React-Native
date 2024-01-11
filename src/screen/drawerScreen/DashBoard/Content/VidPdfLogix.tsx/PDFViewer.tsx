@@ -75,20 +75,20 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     elevation: 5,
     shadowOpacity: 1.0,
-    marginBottom: 10,
+    marginBottom: responsiveHeight(1),
     margin: 10,
   },
   pdfInfo: {
     alignSelf: 'center',
   },
   pdfTitle: {
-    fontSize: responsiveHeight(2.0),
+    fontSize: responsiveFontSize(2.0),
     color: 'black',
     fontWeight: '600',
     textAlign: 'center',
   },
   desc: {
-    fontSize: responsiveHeight(1.5),
+    fontSize: responsiveFontSize(1.5),
     color: 'black',
     fontWeight: '400',
     textAlign: 'center',

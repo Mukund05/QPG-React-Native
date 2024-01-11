@@ -44,14 +44,14 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
 
       // Validation: Check if required fields are not empty
       if (
-        !schoolName?.name ||
-        !schoolName?.strength ||
-        !schoolName?.email ||
-        !schoolName?.person ||
-        !schoolName?.contact_no ||
-        !schoolName?.city ||
-        !schoolName?.state ||
-        !schoolName?.country
+        !formData?.name ||
+        !formData?.strength ||
+        !formData?.email ||
+        !formData?.person ||
+        !formData?.contact_no ||
+        !formData?.city ||
+        !formData?.state ||
+        !formData?.country
       ) {
         // Alert if any required field is empty
         toast.show('Please fill all the fields.', {

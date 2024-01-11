@@ -16,12 +16,14 @@ import {fetchtoken} from '../../../utils/fetchItem';
 import {useDispatch, useSelector} from 'react-redux';
 import {setOrderData} from '../../../store/Features/OrderData';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { RefreshControl } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
 const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const selector = useSelector((state: any) => state.orderData);
   const dispatch = useDispatch();
+  const [refreshing, setRefreshing] = React.useState(false);
   const [data, setData] = React.useState<any>(
     selector?.orderData ? selector.orderData : null,
   );
@@ -40,6 +42,12 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
       toast.show('Something went wrong.', {type: 'danger'});
       console.log('ORDER HISTORY::ERROR', error);
     }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchOrders();
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -71,6 +79,9 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
       />
       <ScrollView
         keyboardShouldPersistTaps="handled"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         style={{backgroundColor: 'white'}}>
         <View style={styles.container}>
           <View style={styles.colorPallet}>
@@ -117,7 +128,7 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
                       backgroundColor: `${
                         item.status === 0
                           ? '#FFC436'
-                          : item.status === 2
+                          : item.status !== 2
                           ? '#65B741'
                           : 'red'
                       }`,
@@ -142,7 +153,7 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
                     <Text style={styles.details}>
                       {item.status === 0
                         ? 'Pending'
-                        : item.status === 2
+                        : item.status !== 2
                         ? 'Confirmed'
                         : 'Cancelled'}
                     </Text>
