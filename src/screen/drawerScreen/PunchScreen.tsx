@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +11,15 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackgroundActions from 'react-native-background-actions';
 import Header from '../../utils/Header';
+import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
+import {
+  requestBackgroundLocationPermission,
+  requestFineLocationPermission,
+  showPermissionAlert,
+} from '../../utils/Permission';
+import Geolocation from 'react-native-geolocation-service';
+import { fetchUser, fetchtoken } from '../../utils/fetchItem';
+import { mapUpdate } from '../../api/api';
 
 interface PunchScreenProps {
   navigation: any; // Replace with the actual type if possible
@@ -17,7 +28,7 @@ interface PunchScreenProps {
 interface TimerData {
   isPunchedIn: boolean;
   punchInTime?: Date;
-  punchOutTime?: Date;
+  punchOutTime?: Date ;
 }
 
 const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
@@ -27,7 +38,8 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
     punchOutTime: undefined,
   });
   const [timer, setTimer] = useState<number>(0);
-
+  const [locationPermission, setLocationPermission] = useState('');
+  const [cordinates, setCordinates] = useState<any>([]); // [{lat: 0, lng: 0}]
   const options = {
     taskName: 'Punch In',
     taskTitle: 'Best Way Learning',
@@ -44,20 +56,52 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   };
 
   const handlePunchIn = async () => {
-    const time = new Date();
-    setTimerData({
-      isPunchedIn: true,
-      punchInTime: time,
-      punchOutTime: undefined,
-    });
-    setTimer(0);
-    await startBackgroundTimer();
-
     try {
-      await AsyncStorage.setItem('punchIn', JSON.stringify(true));
-      await AsyncStorage.setItem('punchedInTime', JSON.stringify(time));
+      let locationPermission = await requestFineLocationPermission();
+      let backgroundLocationPermission =
+        await requestBackgroundLocationPermission();
+
+      // if (locationPermission && backgroundLocationPermission) {
+        const time = new Date();
+
+        setTimerData({
+          isPunchedIn: true,
+          punchInTime: time,
+          punchOutTime: undefined,
+        });
+        setTimer(0);
+
+        Geolocation.getCurrentPosition(
+          async position => {
+            
+
+            const cordinate = [
+              {lat: position.coords.latitude, lng: position.coords.longitude},
+            ];
+            setCordinates(cordinate);
+            await startBackgroundTimer();
+            try {
+              await AsyncStorage.setItem('punchIn', JSON.stringify(true));
+              await AsyncStorage.setItem('punchedInTime', JSON.stringify(time));
+            } catch (error) {
+              console.error('Error storing data:', error);
+            }
+          },
+          error => {
+            console.log(error.code, error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 10000,
+          },
+        );
+      // } else {
+      //   // Handle denial or take appropriate action
+      //   showPermissionAlert();
+      // }
     } catch (error) {
-      console.error('Error storing data:', error);
+      console.error('Error handling location permission:', error);
     }
   };
 
@@ -109,9 +153,80 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   const sleep = (time: any) =>
     new Promise(resolve => setTimeout(() => resolve(() => {}), time));
 
+  const updatedPosition =async () => {
+    try {
+      const position = await new Promise((resolve, reject) => {
+        Geolocation.getCurrentPosition(
+          (position: Geolocation.GeoPosition) => {
+            resolve(position);
+          },
+          (error: Geolocation.GeoError) => {
+            reject(error);
+          },
+          { enableHighAccuracy: true, timeout: 60000, maximumAge: 10000 }
+        );
+      });
+
+      return position;
+    } catch (error:any) {
+      console.log(error.code,error.message)
+    }
+  }
+
+  const update_UserLocation = async (cordinate:any,dateTime:any) => {
+    const coords = cordinate.map((coord:any)=>({lat:coord.lat,lng:coord.lng}));
+    // console.log(coords) 
+    const {id} = await fetchUser();
+    const token = await fetchtoken();
+    const data = {
+      user_id: id,
+      coors: JSON.stringify(coords),
+      inTime: timeModifier(timerData.punchInTime),
+      outTime: timeModifier(timerData.punchOutTime),
+      duration: formatTime(timer),
+    }
+    
+    try {
+      if(token){
+        const response = await mapUpdate(token,data);
+        console.log("response",response)
+      }
+    } catch (error) {
+      console.log("PUNCH SCREEN::mapUpdate::SCREEN",error)
+    }
+  }
+
   const handleBackgroundTimer = async () => {
-    await new Promise(async resolve => {
+    await new Promise(async () => {
       for (let i = 0; BackgroundActions.isRunning(); i++) {
+        console.log(i)
+        try {
+          
+          //Only run if user is punched in and background time is running
+          if(true){
+            const position:any = await updatedPosition();
+            // console.log(position);
+            if(position){
+
+              const live_cord=[
+                {lat:position.coords.latitude,lng:position.coords.longitude}
+              ]
+
+              setCordinates((prev:any)=>[
+                ...prev,
+                {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude,
+                }
+              ])
+              const new_time = new Date();
+              await update_UserLocation(live_cord,new Date());
+              
+            }
+          }
+        } catch (error) {
+          console.log("Error in background running",error)
+        }
         await sleep(60000);
       }
     });

@@ -287,3 +287,17 @@ export const editSchool = async (token : string | null, id : string | number, sc
     console.log('API::EDIT_SCHOOL:ERROR',error);
   }
 }
+
+export const mapUpdate = async (token: string | null ,data:any ) => {
+  try {
+    const response = await api.post('user-map-update',data,{
+      headers : {
+        Authorization : `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    return response.data;
+  } catch (error) {
+    console.log('API::UPDATE MAP DATA::ERROR',error);
+  }
+}
