@@ -12,31 +12,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackgroundActions from 'react-native-background-actions';
 import Header from '../../utils/Header';
 import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
-import {
-  requestBackgroundLocationPermission,
-  requestFineLocationPermission,
-  showPermissionAlert,
-} from '../../utils/Permission';
+import {background_permission, requestPermission} from '../../utils/Permission';
 import Geolocation from 'react-native-geolocation-service';
-import { fetchUser, fetchtoken } from '../../utils/fetchItem';
-import { mapUpdate } from '../../api/api';
+import {fetchUser, fetchtoken} from '../../utils/fetchItem';
+import {mapUpdate} from '../../api/api';
 
 interface PunchScreenProps {
   navigation: any; // Replace with the actual type if possible
 }
 
-interface TimerData {
-  isPunchedIn: boolean;
-  punchInTime?: Date;
-  punchOutTime?: Date ;
-}
-
 const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
-  const [timerData, setTimerData] = useState<TimerData>({
-    isPunchedIn: false,
-    punchInTime: undefined,
-    punchOutTime: undefined,
-  });
+  const [timerData, setTimerData] = useState<boolean>(false);
+  const [punchedInTime, setPunchInTime] = useState<any>(undefined);
+  const [punchOutTime, setPunchOutTime] = useState<any>(undefined);
   const [timer, setTimer] = useState<number>(0);
   const [locationPermission, setLocationPermission] = useState('');
   const [cordinates, setCordinates] = useState<any>([]); // [{lat: 0, lng: 0}]
@@ -57,24 +45,24 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
 
   const handlePunchIn = async () => {
     try {
-      let locationPermission = await requestFineLocationPermission();
-      let backgroundLocationPermission =
-        await requestBackgroundLocationPermission();
-
-      // if (locationPermission && backgroundLocationPermission) {
+      let locationPermission = false;
+      let background_granted = false;
+      await requestPermission((permissionGranted: any) => {
+        locationPermission = permissionGranted;
+      });
+      await background_permission((permissionGranted: any) => {
+        background_granted = permissionGranted;
+      });
+      if (locationPermission && background_granted) {
         const time = new Date();
 
-        setTimerData({
-          isPunchedIn: true,
-          punchInTime: time,
-          punchOutTime: undefined,
-        });
+        setTimerData(true);
+        setPunchInTime(time);
+        setPunchOutTime(undefined);
         setTimer(0);
 
         Geolocation.getCurrentPosition(
           async position => {
-            
-
             const cordinate = [
               {lat: position.coords.latitude, lng: position.coords.longitude},
             ];
@@ -96,26 +84,25 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
             maximumAge: 10000,
           },
         );
-      // } else {
-      //   // Handle denial or take appropriate action
-      //   showPermissionAlert();
-      // }
+      } else {
+        // Handle denial or take appropriate action
+
+        Alert.alert('Not Granted Background location permission  ');
+      }
     } catch (error) {
       console.error('Error handling location permission:', error);
     }
   };
 
   const handlePunchOut = async () => {
-    if (timerData.isPunchedIn) {
+    if (timerData) {
       const time = new Date();
-      setTimerData({
-        ...timerData,
-        punchOutTime: time,
-        isPunchedIn: false,
-      });
+      setTimerData(false);
+      setPunchOutTime(time);
       stopBackgroundTimer();
       try {
-        await AsyncStorage.setItem('punchIn', JSON.stringify(false));
+        await AsyncStorage.removeItem('punchIn');
+        await AsyncStorage.removeItem('punchedInTime');
       } catch (error) {
         console.error('Error storing data:', error);
       }
@@ -153,7 +140,7 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   const sleep = (time: any) =>
     new Promise(resolve => setTimeout(() => resolve(() => {}), time));
 
-  const updatedPosition =async () => {
+  const updatedPosition = async () => {
     try {
       const position = await new Promise((resolve, reject) => {
         Geolocation.getCurrentPosition(
@@ -163,69 +150,69 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
           (error: Geolocation.GeoError) => {
             reject(error);
           },
-          { enableHighAccuracy: true, timeout: 60000, maximumAge: 10000 }
+          {enableHighAccuracy: true, timeout: 60000, maximumAge: 10000},
         );
       });
 
       return position;
-    } catch (error:any) {
-      console.log(error.code,error.message)
+    } catch (error: any) {
+      console.log(error.code, error.message);
     }
-  }
+  };
 
-  const update_UserLocation = async (cordinate:any,dateTime:any) => {
-    const coords = cordinate.map((coord:any)=>({lat:coord.lat,lng:coord.lng}));
-    // console.log(coords) 
+  const update_UserLocation = async (cordinate: any, dateTime: any) => {
+    const coords = cordinate.map((coord: any) => ({
+      lat: coord.lat,
+      lng: coord.lng,
+    }));
+    // console.log(coords)
     const {id} = await fetchUser();
     const token = await fetchtoken();
     const data = {
       user_id: id,
       coors: JSON.stringify(coords),
-      inTime: timeModifier(timerData.punchInTime),
-      outTime: timeModifier(timerData.punchOutTime),
+      inTime: timeModifier(punchedInTime),
+      outTime: timeModifier(punchOutTime),
       duration: formatTime(timer),
-    }
-    
+    };
+    console.log('Data to be sent :: ', data);
     try {
-      if(token){
-        const response = await mapUpdate(token,data);
-        console.log("response",response)
+      if (token) {
+        const response = await mapUpdate(token, data);
+        console.log('response', response);
       }
     } catch (error) {
-      console.log("PUNCH SCREEN::mapUpdate::SCREEN",error)
+      console.log('PUNCH SCREEN::mapUpdate::SCREEN', error);
     }
-  }
+  };
 
   const handleBackgroundTimer = async () => {
     await new Promise(async () => {
       for (let i = 0; BackgroundActions.isRunning(); i++) {
-        console.log(i)
+        // console.log(i);
         try {
-          
           //Only run if user is punched in and background time is running
-          if(true){
-            const position:any = await updatedPosition();
+          if (true) {
+            const position: any = await updatedPosition();
             // console.log(position);
-            if(position){
+            if (position) {
+              const live_cord = [
+                {lat: position.coords.latitude, lng: position.coords.longitude},
+              ];
 
-              const live_cord=[
-                {lat:position.coords.latitude,lng:position.coords.longitude}
-              ]
-
-              setCordinates((prev:any)=>[
+              setCordinates((prev: any) => [
                 ...prev,
                 {
                   lat: position.coords.latitude,
                   lng: position.coords.longitude,
-                }
-              ])
+                },
+              ]);
               const new_time = new Date();
-              await update_UserLocation(live_cord,new Date());
-              
+              await update_UserLocation(live_cord, new Date());
             }
           }
         } catch (error) {
-          console.log("Error in background running",error)
+          console.log('Error in background running', error);
         }
         await sleep(60000);
       }
@@ -235,9 +222,12 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   const startBackgroundTimer = async () => {
     try {
       await BackgroundActions.start(handleBackgroundTimer, options);
-    } catch (error) {}
+    } catch (error) {
+      console.error('Error starting BackgroundService:', error);
+    }
   };
 
+  //will stop background activity of the app
   const stopBackgroundTimer = () => {
     try {
       BackgroundActions.stop().then(() => {});
@@ -253,17 +243,11 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
         const storedPunchedInTime = await AsyncStorage.getItem('punchedInTime');
 
         if (storedPunchIn) {
-          setTimerData(prevData => ({
-            ...prevData,
-            isPunchedIn: JSON.parse(storedPunchIn),
-          }));
+          setTimerData(JSON.parse(storedPunchIn));
         }
 
         if (storedPunchedInTime) {
-          setTimerData(prevData => ({
-            ...prevData,
-            punchInTime: new Date(JSON.parse(storedPunchedInTime)),
-          }));
+          setPunchInTime(new Date(JSON.parse(storedPunchedInTime)));
 
           const currentTime = new Date();
           const timeDiff = Math.floor(
@@ -282,13 +266,40 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (timerData.isPunchedIn) {
+    if (timerData) {
       const interval = setInterval(() => {
         setTimer(prevData => prevData + 1);
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [timerData.isPunchedIn]);
+  }, [timerData]);
+
+  useEffect(() => {
+    const time = async () => {
+      if (punchOutTime) {
+        console.log('Starting time', punchedInTime);
+        console.log('Ending time ', punchOutTime);
+        await updatedPosition();
+        const position: any = await updatedPosition();
+        if (position) {
+          const newCoordinates = [
+            {lat: position.coords.latitude, lng: position.coords.longitude},
+          ];
+
+          setCordinates((prev: any) => [
+            ...prev,
+            {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+          ]);
+          await update_UserLocation(newCoordinates, punchedInTime);
+        }
+      }
+    };
+
+    time();
+  }, [punchOutTime]);
 
   return (
     <>
@@ -300,17 +311,17 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
       />
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <View>
-          {(timerData.punchOutTime !== undefined ||
-            (timerData.isPunchedIn && timerData.punchInTime !== undefined)) && (
+          {(punchOutTime !== undefined ||
+            (timerData && punchedInTime !== undefined)) && (
             <>
               <Text style={styles.title}>
-                Punch in: {dateModifier(timerData.punchInTime)} :{' '}
-                {timeModifier(timerData.punchInTime)}
+                Punch in: {dateModifier(punchedInTime)} :{' '}
+                {timeModifier(punchedInTime)}
               </Text>
-              {timerData.punchOutTime !== undefined && (
+              {punchOutTime !== undefined && (
                 <Text style={styles.title}>
-                  Punch Out : {dateModifier(timerData.punchOutTime)} :{' '}
-                  {timeModifier(timerData.punchOutTime)}
+                  Punch Out : {dateModifier(punchOutTime)} :{' '}
+                  {timeModifier(punchOutTime)}
                 </Text>
               )}
               <Text style={styles.title}>Time : {formatTime(timer)}</Text>
@@ -318,16 +329,13 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
           )}
 
           <TouchableOpacity
-            style={[
-              styles.button,
-              timerData.isPunchedIn && styles.punchInButton,
-            ]}
+            style={[styles.button, timerData && styles.punchInButton]}
             onPress={handlePunchIn}
-            disabled={timerData.isPunchedIn}>
+            disabled={timerData}>
             <Text style={styles.buttonTitle}>Punch In</Text>
           </TouchableOpacity>
 
-          {timerData.isPunchedIn ? (
+          {timerData ? (
             <>
               <TouchableOpacity
                 style={[styles.button, styles.punchOutButton]}
