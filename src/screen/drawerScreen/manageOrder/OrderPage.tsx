@@ -44,6 +44,13 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
 
   const [total, setTotal] = useState<string>('');
 
+  const [resetKey, setResetKey] = useState(0);
+
+  const handleReset = () => {
+    // Increment the resetKey to trigger a re-render with initial state
+    setResetKey((prevKey) => prevKey + 1);
+  };
+
   const dispatch = useDispatch();
   const toast = useToast();
   // Fetch Token
@@ -86,33 +93,50 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
 
   // Fetch Subjects when className changes
   useEffect(() => {
-    // Fetch subjects API based on the selected className and set the result to the subjects state
+    // console.log('classID:', classID);
+    // console.log('subjectId:', subjectId);
+  
     const fetchSubjects = async () => {
       try {
         const token = await getToken();
+        if (!classID) return;
         const response = await getSubjects(token as string, classID);
         setSubjects(response.data);
-        // console.log('ORDER PAGE::SUBJECTS', response.data);
       } catch (error) {
         console.log('ORDER PAGE::SUBJECT FETCHING ERROR', error);
       }
     };
-
+  
     if (classID) fetchSubjects();
   }, [classID]);
 
   // Fetch Price when subject changes
   useEffect(() => {
-    // Fetch price API based on the selected className and subject and set the result to the price state
+    const fetchSubjects = async () => {
+      try {
+        const token = await getToken();
+        if (!classID) return;
+        const response = await getSubjects(token as string, classID);
+        // console.log('Subjects API response:', response.data);
+        setSubjects(response.data);
+      } catch (error) {
+        console.log('ORDER PAGE::SUBJECT FETCHING ERROR', error);
+      }
+    };
+  
     const fetchPrice = async () => {
       try {
         const token = await getToken();
+        if (!classID || !subjectId) return;
         const response = await getPrice(token as string, classID, subjectId);
+        // console.log('Price API response:', response.data);
         setPrice(response.data);
       } catch (error) {
         console.log('ORDER PAGE::PRICE FETCHING ERROR', error);
       }
     };
+  
+    if (classID) fetchSubjects();
     if (classID && subjectId) fetchPrice();
   }, [classID, subjectId]);
 
@@ -125,6 +149,17 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     const roundedFinalAmount = finalAmount.toFixed(2);
     setTotal(roundedFinalAmount.toString());
   }, [discount, quantity, price]);
+
+  useEffect(() => {
+    // Reset all states when the resetKey changes
+    setSchoolName('');
+    setClassName('');
+    setSubject('');
+    setDiscount('');
+    setPrice('');
+    setQuantity('1');
+    setTotal('');
+  }, [resetKey]);
 
   const ViewBook = () => {
     navigation.navigate('Order Details');
@@ -174,20 +209,15 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     }
 
     dispatch(addOrder(data)); //dispatch the data inside orderSlice
-    console.log(data);
+    // console.log(data);
 
-    setSchoolName('');
-    setClassName('');
-    setSubject('');
-    setDiscount('');
-    setPrice('');
-    setQuantity('1');
-    setTotal('');
+    handleReset(); // Reset all states
 
     toast.show('Book Added Successfully', {
       type: 'success',
       style: {width: '90%'},
     });
+    navigation.navigate("Order Page")
   };
 
   const createData = () => {
