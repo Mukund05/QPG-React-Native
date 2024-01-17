@@ -1,5 +1,5 @@
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../../../utils/Header';
 import {
   responsiveFontSize,
@@ -10,46 +10,61 @@ import {TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {fetchUser} from '../../../utils/fetchItem';
-import {deleteOrder, updateQuantity} from '../../../store/Features/OrderSlice';
+import {
+  addOrder,
+  deleteOrder,
+  updateQuantity,
+} from '../../../store/Features/OrderSlice';
+import { useToast } from 'react-native-toast-notifications';
 
 const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
-  const [totalAmount, setTotalAmount] = React.useState<number>(0);
-  const selectedOrder = useSelector((state: any) => state.order.order); // Corrected typo in state name
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    // Calculate the total amount based on the subtotals of all items
-    if (selectedOrder) {
-      const total = selectedOrder.reduce(
-        (sum: number, item: any) =>
-          sum +
-          parseFloat(subTotal(item.mrp.mrp, item.quantity, item.discount)),
-        0,
-      );
-      setTotalAmount(total.toFixed(2));
-    }
-  }, [selectedOrder]);
-
+  const userId = useSelector((state: any) => state.user.user.id); 
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [orderData, setOrderData] = useState<any[]>([]);
+  const toast=useToast();
+  
   useEffect(() => {
     const getData = async () => {
       try {
-        const {id} = await fetchUser();
-        // const orderData: any = await AsyncStorage.getItem(id.toString());
-        // setSelectedOrder(JSON.parse(orderData) || []); // Added nullish coalescing to handle null case
+        if (orderData.length === 0) {
+          const storedOrderData: any = await AsyncStorage.getItem(
+            userId.toString(),
+          );
+          setOrderData(JSON.parse(storedOrderData) || []);
+        }
       } catch (error) {
         console.log('ORDER DETAILS::ERROR IN GETTING DATA', error);
       }
     };
     getData();
-  }, []);
+  }, [orderData, userId]);
+
+  useEffect(() => {
+    // Calculate the total amount based on the subtotals of all items
+    const total:any = orderData.reduce(
+      (sum: number, item: any) =>
+        sum + parseFloat(subTotal(item.mrp.mrp, item.quantity, item.discount)),
+      0,
+    );
+    setTotalAmount(total.toFixed(2));
+  }, [orderData]);
 
   const handleQuantityUpdate = (
     itemId: string,
     quantity: any,
     type: string,
   ) => {
+    if(type === 'sub' && quantity === 1) {
+      toast.show('Quantity cannot be less than 1', {
+        type: 'danger',
+        style: {width: '90%'},
+        })
+      return;
+    };
     const newQuantity = type === 'add' ? quantity + 1 : quantity - 1;
     dispatch(updateQuantity({itemId, newQuantity}));
+    updateAsyncStorage(itemId, newQuantity);
   };
 
   const handleSubmit = () => {
@@ -65,7 +80,53 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   };
 
   const handleDeleteItem = (itemId: string) => {
+    toast.show('Item deleted successfully', {
+      type: 'success',
+      style: {width: '90%'},
+      })
     dispatch(deleteOrder(itemId));
+    deleteFromAsyncStorage(itemId);
+  };
+
+  const updateAsyncStorage = async (itemId: string, newQuantity: number) => {
+    try {
+      const storedOrderData: any = await AsyncStorage.getItem(
+        userId.toString(),
+      );
+      const parsedOrderData = JSON.parse(storedOrderData);
+      const updatedOrderData = parsedOrderData.map((item: any) => {
+        if (item.id === itemId) {
+          return {...item, quantity: newQuantity};
+        }
+        return item;
+      });
+      await AsyncStorage.setItem(
+        userId.toString(),
+        JSON.stringify(updatedOrderData),
+      );
+      setOrderData(updatedOrderData); // Update local state with new data
+    } catch (error) {
+      console.error('Error updating Async Storage:', error);
+    }
+  };
+
+  const deleteFromAsyncStorage = async (itemId: string) => {
+    try {
+      const storedOrderData: any = await AsyncStorage.getItem(
+        userId.toString(),
+      );
+      const parsedOrderData = JSON.parse(storedOrderData);
+      const updatedOrderData = parsedOrderData.filter(
+        (item: any) => item.id !== itemId,
+      );
+      await AsyncStorage.setItem(
+        userId.toString(),
+        JSON.stringify(updatedOrderData),
+      );
+      setOrderData(updatedOrderData); // Update local state with new data
+    } catch (error) {
+      console.error('Error deleting from Async Storage:', error);
+    }
   };
 
   return (
@@ -78,20 +139,20 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
       />
       <ScrollView keyboardShouldPersistTaps="always" style={styles.screen}>
         <View style={styles.container}>
-          {totalAmount !== 0 ? (
+          {totalAmount > 0 ? (
             <Text style={styles.header}>Total Amount : ₹{totalAmount}</Text>
           ) : (
             <Text style={styles.header}>No Order Details</Text>
           )}
 
-          {selectedOrder?.map((item: any, index: any) => (
+          {orderData?.map((item: any, index: any) => (
             <View style={styles.orderCard} key={index}>
               <View style={styles.icon}>
                 <Icon
                   name="delete"
                   size={25}
                   color="red"
-                  onPress={() => handleDeleteItem(item)}
+                  onPress={() => handleDeleteItem(item.id)}
                 />
               </View>
               <View style={styles.details}>
@@ -223,7 +284,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'green',
-    maxWidth: '70%',
+    maxWidth: '67%',
     alignSelf: 'flex-end',
     marginStart: 'auto',
     // textAlign: 'right',
