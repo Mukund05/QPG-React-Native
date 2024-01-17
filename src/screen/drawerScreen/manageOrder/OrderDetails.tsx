@@ -10,20 +10,32 @@ import {TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {fetchUser} from '../../../utils/fetchItem';
-import { deleteOrder, updateQuantity } from '../../../store/Features/OrderSlice';
+import {deleteOrder, updateQuantity} from '../../../store/Features/OrderSlice';
 
 const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
-  const seletecOrder=useSelector((state:any)=>state.order.order);
-  const dispatch=useDispatch();
+  const selectedOrder = useSelector((state: any) => state.order.order); // Corrected typo in state name
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Calculate the total amount based on the subtotals of all items
+    if (selectedOrder) {
+      const total = selectedOrder.reduce(
+        (sum: number, item: any) =>
+          sum +
+          parseFloat(subTotal(item.mrp.mrp, item.quantity, item.discount)),
+        0,
+      );
+      setTotalAmount(total.toFixed(2));
+    }
+  }, [selectedOrder]);
 
   useEffect(() => {
     const getData = async () => {
       try {
         const {id} = await fetchUser();
-        // const orderData = await AsyncStorage.getItem(id.toString());
-        // console.log('ORDER DETAILS::ORDER DATA', orderData);
-        // setData(seletecOrder);
+        // const orderData: any = await AsyncStorage.getItem(id.toString());
+        // setSelectedOrder(JSON.parse(orderData) || []); // Added nullish coalescing to handle null case
       } catch (error) {
         console.log('ORDER DETAILS::ERROR IN GETTING DATA', error);
       }
@@ -31,45 +43,29 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
     getData();
   }, []);
 
-  useEffect(() => {
-    // Calculate the total amount based on the subtotals of all items
-    if (seletecOrder) {
-      const total = seletecOrder.reduce(
-        (sum: number, item: any) => sum + parseFloat(subTotal(item.mrp.mrp, item.quantity, item.discount)),
-        0
-      );
-      setTotalAmount(total.toFixed(2));
-    }
-  }, [seletecOrder]);
-
-  const handleQuantityUpdate = (itemId:string,qunat:any,type:string) => {
-    // console.log(itemId,"ITEM ID with quantity ",qunat,"new quantity ");
-    const newQuantity=type==='add'?qunat+1:qunat-1;
-    dispatch(updateQuantity({itemId, newQuantity}))
+  const handleQuantityUpdate = (
+    itemId: string,
+    quantity: any,
+    type: string,
+  ) => {
+    const newQuantity = type === 'add' ? quantity + 1 : quantity - 1;
+    dispatch(updateQuantity({itemId, newQuantity}));
   };
 
-  useEffect(()=>{
-    if(seletecOrder.length===0){
-      setTotalAmount(0);
-    }
-  },[seletecOrder])
-
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    // Implement your logic for placing the order
+  };
 
   const subTotal = (price_mrp: any, quantity: any, discount: any) => {
     const totalAmount = price_mrp * quantity;
     const discountAmount = totalAmount * (discount / 100);
     const finalAmount = totalAmount - discountAmount;
-    // console.log('TOTAL AMOUNT',finalAmount);
     const roundedFinalAmount = finalAmount.toFixed(2);
     return roundedFinalAmount.toString();
   };
 
   const handleDeleteItem = (itemId: string) => {
-    console.log('ITEM ID')
-    console.log(itemId)
     dispatch(deleteOrder(itemId));
-
   };
 
   return (
@@ -82,16 +78,21 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
       />
       <ScrollView keyboardShouldPersistTaps="always" style={styles.screen}>
         <View style={styles.container}>
-          {totalAmount!==0 ? (
+          {totalAmount !== 0 ? (
             <Text style={styles.header}>Total Amount : ₹{totalAmount}</Text>
           ) : (
             <Text style={styles.header}>No Order Details</Text>
           )}
 
-          {seletecOrder?.map((item: any,index:any) => ( 
+          {selectedOrder?.map((item: any, index: any) => (
             <View style={styles.orderCard} key={index}>
               <View style={styles.icon}>
-                <Icon name="delete" size={25} color="red" onPress={()=>handleDeleteItem(item)}/>
+                <Icon
+                  name="delete"
+                  size={25}
+                  color="red"
+                  onPress={() => handleDeleteItem(item)}
+                />
               </View>
               <View style={styles.details}>
                 <View style={styles.field}>
@@ -121,25 +122,33 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                   <Text style={styles.label}>Qunatity :</Text>
                   <View style={styles.iconContainer}>
                     <TouchableOpacity
-                      onPress={() => handleQuantityUpdate(item.id,item.quantity,'sub')}
+                      onPress={() =>
+                        handleQuantityUpdate(item.id, item.quantity, 'sub')
+                      }
                       style={[styles.circleIcon, {marginEnd: 15}]}>
                       <Icon name="horizontal-rule" size={20} color="black" />
                     </TouchableOpacity>
                     <Text style={styles.value}>{item.quantity}</Text>
                     <TouchableOpacity
                       style={[styles.circleIcon, {marginStart: 15}]}
-                      onPress={() => handleQuantityUpdate(item.id,item.quantity,'add')}>
+                      onPress={() =>
+                        handleQuantityUpdate(item.id, item.quantity, 'add')
+                      }>
                       <Icon name="add" size={20} color="black" />
                     </TouchableOpacity>
                   </View>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>Discount :</Text>
-                  <Text style={styles.value}>{item.discount===''?'0':item.discount}% </Text>
+                  <Text style={styles.value}>
+                    {item.discount === '' ? '0' : item.discount}%{' '}
+                  </Text>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>SubTotal :</Text>
-                  <Text style={styles.value}>₹ {subTotal(item.mrp.mrp,item.quantity,item.discount)} </Text>
+                  <Text style={styles.value}>
+                    ₹ {subTotal(item.mrp.mrp, item.quantity, item.discount)}{' '}
+                  </Text>
                 </View>
               </View>
             </View>
