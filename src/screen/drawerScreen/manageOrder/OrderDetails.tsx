@@ -10,20 +10,20 @@ import {TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {fetchUser} from '../../../utils/fetchItem';
-import { deleteOrder } from '../../../store/Features/OrderSlice';
+import { deleteOrder, updateQuantity } from '../../../store/Features/OrderSlice';
 
 const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
-  const [data, setData] = React.useState<any>(null);
+  const seletecOrder=useSelector((state:any)=>state.order.order);
   const dispatch=useDispatch();
 
   useEffect(() => {
     const getData = async () => {
       try {
         const {id} = await fetchUser();
-        const orderData = await AsyncStorage.getItem(id.toString());
-        console.log('ORDER DETAILS::ORDER DATA', orderData);
-        setData(JSON.parse(orderData as any));
+        // const orderData = await AsyncStorage.getItem(id.toString());
+        // console.log('ORDER DETAILS::ORDER DATA', orderData);
+        // setData(seletecOrder);
       } catch (error) {
         console.log('ORDER DETAILS::ERROR IN GETTING DATA', error);
       }
@@ -33,24 +33,26 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
 
   useEffect(() => {
     // Calculate the total amount based on the subtotals of all items
-    if (data) {
-      const total = data.reduce(
+    if (seletecOrder) {
+      const total = seletecOrder.reduce(
         (sum: number, item: any) => sum + parseFloat(subTotal(item.mrp.mrp, item.quantity, item.discount)),
         0
       );
       setTotalAmount(total.toFixed(2));
     }
-  }, [data]);
+  }, [seletecOrder]);
 
-  const handleQuantityUpdate = (type: string) => {
-    if (type === 'increment') {
-      setTotalAmount(totalAmount + 1);
-    } else {
-      if (totalAmount > 0) {
-        setTotalAmount(totalAmount - 1);
-      }
-    }
+  const handleQuantityUpdate = (itemId:string,qunat:any,type:string) => {
+    // console.log(itemId,"ITEM ID with quantity ",qunat,"new quantity ");
+    const newQuantity=type==='add'?qunat+1:qunat-1;
+    dispatch(updateQuantity({itemId, newQuantity}))
   };
+
+  useEffect(()=>{
+    if(seletecOrder.length===0){
+      setTotalAmount(0);
+    }
+  },[seletecOrder])
 
   const handleSubmit = () => {};
 
@@ -64,7 +66,10 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   };
 
   const handleDeleteItem = (itemId: string) => {
+    console.log('ITEM ID')
+    console.log(itemId)
     dispatch(deleteOrder(itemId));
+
   };
 
   return (
@@ -77,16 +82,16 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
       />
       <ScrollView keyboardShouldPersistTaps="always" style={styles.screen}>
         <View style={styles.container}>
-          {totalAmount ? (
+          {totalAmount!==0 ? (
             <Text style={styles.header}>Total Amount : ₹{totalAmount}</Text>
           ) : (
             <Text style={styles.header}>No Order Details</Text>
           )}
 
-          {data?.map((item: any,index:any) => ( 
+          {seletecOrder?.map((item: any,index:any) => ( 
             <View style={styles.orderCard} key={index}>
               <View style={styles.icon}>
-                <Icon name="delete" size={25} color="red" onPress={()=>handleDeleteItem(item.id)}/>
+                <Icon name="delete" size={25} color="red" onPress={()=>handleDeleteItem(item)}/>
               </View>
               <View style={styles.details}>
                 <View style={styles.field}>
@@ -116,21 +121,21 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                   <Text style={styles.label}>Qunatity :</Text>
                   <View style={styles.iconContainer}>
                     <TouchableOpacity
-                      onPress={() => handleQuantityUpdate('decrement')}
+                      onPress={() => handleQuantityUpdate(item.id,item.quantity,'sub')}
                       style={[styles.circleIcon, {marginEnd: 15}]}>
                       <Icon name="horizontal-rule" size={20} color="black" />
                     </TouchableOpacity>
                     <Text style={styles.value}>{item.quantity}</Text>
                     <TouchableOpacity
                       style={[styles.circleIcon, {marginStart: 15}]}
-                      onPress={() => handleQuantityUpdate('increment')}>
+                      onPress={() => handleQuantityUpdate(item.id,item.quantity,'add')}>
                       <Icon name="add" size={20} color="black" />
                     </TouchableOpacity>
                   </View>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>Discount :</Text>
-                  <Text style={styles.value}>{item.discount}% </Text>
+                  <Text style={styles.value}>{item.discount===''?'0':item.discount}% </Text>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>SubTotal :</Text>
@@ -199,14 +204,14 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   label: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'grey',
     marginEnd: 12,
     alignItems: 'flex-start',
   },
   value: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'green',
     maxWidth: '70%',

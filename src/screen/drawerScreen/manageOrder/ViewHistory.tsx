@@ -19,6 +19,7 @@ const ViewHistory: React.FC<{navigation: any; route: any}> = ({
     const total = mrp * quantity - (mrp * quantity * discount) / 100;
     return total.toFixed(2);
   };
+  // console.log(data)
   return (
     <>
       <Header
@@ -71,7 +72,7 @@ const ViewHistory: React.FC<{navigation: any; route: any}> = ({
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>Discount :</Text>
-                  <Text style={styles.value}>{element.discount}% </Text>
+                  <Text style={styles.value}>{element.discount===null ? `0` : element.discount}% </Text>
                 </View>
                 <View style={styles.field}>
                   <Text style={styles.label}>SubTotal :</Text>

@@ -25,6 +25,7 @@ import {useDispatch} from 'react-redux';
 import {addOrder} from '../../../store/Features/OrderSlice';
 import {useToast} from 'react-native-toast-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { v4 as uuidv4 } from 'uuid';
 
 const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
   const [schoolName, setSchoolName] = useState<any>('');
@@ -43,7 +44,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
   const [quantity, setQuantity] = useState<any>('1');
 
   const [total, setTotal] = useState<string>('');
-
+  const [triggerEffect, setTriggerEffect] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
   const handleReset = () => {
@@ -60,6 +61,31 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     } catch (error) {
       console.log('ORDER PAGE::TOKEN FETCHING ERROR', error);
       throw error; // You might want to handle this error appropriately in your app
+    }
+  };
+
+  const fetchSubjects = async () => {
+    try {
+      const token = await getToken();
+      if (!classID) return;
+      const response = await getSubjects(token as string, classID);
+      // console.log('Subjects API response:', response.data);
+      setSubjects(response.data);
+    } catch (error) {
+      console.log('ORDER PAGE::SUBJECT FETCHING ERROR', error);
+    }
+  };
+
+  const fetchPrice = async () => {
+    // console.log('classID:', classID,'subjectId:', subjectId);
+    try {
+      const token = await getToken();
+      if (!classID || !subjectId) return;
+      const response = await getPrice(token as string, classID, subjectId);
+      // console.log('Price API response:', response.data);
+      setPrice(response.data);
+    } catch (error) {
+      console.log('ORDER PAGE::PRICE FETCHING ERROR', error);
     }
   };
 
@@ -87,58 +113,27 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
       }
     };
 
-    fetchClasses();
     fetchSchools();
+    fetchClasses();
+    if(classID) fetchSubjects();
+    if(classID && subjectId) fetchPrice();
   }, []);
 
   // Fetch Subjects when className changes
   useEffect(() => {
     // console.log('classID:', classID);
-    // console.log('subjectId:', subjectId);
-  
-    const fetchSubjects = async () => {
-      try {
-        const token = await getToken();
-        if (!classID) return;
-        const response = await getSubjects(token as string, classID);
-        setSubjects(response.data);
-      } catch (error) {
-        console.log('ORDER PAGE::SUBJECT FETCHING ERROR', error);
-      }
-    };
+    // console.log('subjectId:', subjectId)
   
     if (classID) fetchSubjects();
   }, [classID]);
 
   // Fetch Price when subject changes
   useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const token = await getToken();
-        if (!classID) return;
-        const response = await getSubjects(token as string, classID);
-        // console.log('Subjects API response:', response.data);
-        setSubjects(response.data);
-      } catch (error) {
-        console.log('ORDER PAGE::SUBJECT FETCHING ERROR', error);
-      }
-    };
-  
-    const fetchPrice = async () => {
-      try {
-        const token = await getToken();
-        if (!classID || !subjectId) return;
-        const response = await getPrice(token as string, classID, subjectId);
-        // console.log('Price API response:', response.data);
-        setPrice(response.data);
-      } catch (error) {
-        console.log('ORDER PAGE::PRICE FETCHING ERROR', error);
-      }
-    };
-  
+    
+    // console.log('classID:', classID,'subjectId:', subjectId);
     if (classID) fetchSubjects();
     if (classID && subjectId) fetchPrice();
-  }, [classID, subjectId]);
+  }, [classID, subjectId,triggerEffect]);
 
   // Calculate total amount when quantity or discount changes and set the result to the total state
   useEffect(() => {
@@ -159,6 +154,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     setPrice('');
     setQuantity('1');
     setTotal('');
+    setTriggerEffect((prevValue) => !prevValue);
   }, [resetKey]);
 
   const ViewBook = () => {
@@ -222,6 +218,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
 
   const createData = () => {
     const data: any = {};
+    data['id']=uuidv4();
     data['SchoolItem'] = {
       label: schoolName,
       value: school.filter((item: any) => item.name === schoolName)[0].id,

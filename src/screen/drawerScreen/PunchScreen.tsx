@@ -171,7 +171,7 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
     const data = {
       user_id: id,
       coors: JSON.stringify(coords),
-      inTime: timeModifier(punchedInTime),
+      inTime: punchedInTime===undefined ? timeModifier(new Date()) : timeModifier(punchedInTime),
       outTime: timeModifier(punchOutTime),
       duration: formatTime(timer),
     };
