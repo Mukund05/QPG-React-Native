@@ -15,6 +15,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {register} from '../../api/api';
 import Toast from 'react-native-toast-message';
+import BottomView from '../../utils/BottomView';
 
 const roles = [
   {id: 3, name: 'Teacher'},
@@ -95,86 +96,94 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
   };
 
   return (
-    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
-      <View style={styles.item}>
-        <Text style={styles.title}>Sign Up</Text>
+    <>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+        <View style={styles.item}>
+          <Text style={styles.title}>Sign Up</Text>
 
-        <View style={styles.action}>
-          <FontAwesome name="user-o" color="#420475" style={styles.smallIcon} />
-          <TextInput
-            placeholder="Name"
-            style={styles.textInput}
-            placeholderTextColor="black"
-            value={name}
-            onChange={e => setName(e.nativeEvent.text)}
-          />
-        </View>
-
-        <View style={styles.action}>
-          <Fontisto
-            name="email"
-            color="#420475"
-            size={24}
-            style={{marginLeft: 0, paddingRight: 5}}
-          />
-          <TextInput
-            placeholder="Email"
-            style={styles.textInput}
-            value={email}
-            onChange={e => setEmail(e.nativeEvent.text)}
-            placeholderTextColor="black"
-          />
-        </View>
-
-        <View style={styles.action}>
-          <FontAwesome name="lock" color="#420475" style={styles.smallIcon} />
-          <TextInput
-            placeholder="Password"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={text => setPassword(text)}
-            style={styles.textInput}
-            placeholderTextColor="black"
-          />
-          <TouchableOpacity onPress={handleTogglePasswordVisibility}>
-            <FeatherIcon
-              name={showPassword ? 'eye-off' : 'eye'}
-              size={25}
-              color="black"
+          <View style={styles.action}>
+            <FontAwesome
+              name="user-o"
+              color="#420475"
+              style={styles.smallIcon}
             />
-          </TouchableOpacity>
-        </View>
+            <TextInput
+              placeholder="Name"
+              style={styles.textInput}
+              placeholderTextColor="black"
+              value={name}
+              onChange={e => setName(e.nativeEvent.text)}
+            />
+          </View>
 
-        <View style={styles.inputContainer}>
-          <Picker
-            selectedValue={selectedRole}
-            onValueChange={itemValue => setSelectedRole(itemValue)}
-            style={styles.input}>
-            {roles.map(role => (
-              <Picker.Item
-                key={role.id}
-                label={role.name}
-                value={role}
-                style={styles.picker}
+          <View style={styles.action}>
+            <Fontisto
+              name="email"
+              color="#420475"
+              size={24}
+              style={{marginLeft: 0, paddingRight: 5}}
+            />
+            <TextInput
+              placeholder="Email"
+              style={styles.textInput}
+              value={email}
+              onChange={e => setEmail(e.nativeEvent.text)}
+              placeholderTextColor="black"
+            />
+          </View>
+
+          <View style={styles.action}>
+            <FontAwesome name="lock" color="#420475" style={styles.smallIcon} />
+            <TextInput
+              placeholder="Password"
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={text => setPassword(text)}
+              style={styles.textInput}
+              placeholderTextColor="black"
+            />
+            <TouchableOpacity onPress={handleTogglePasswordVisibility}>
+              <FeatherIcon
+                name={showPassword ? 'eye-off' : 'eye'}
+                size={25}
+                color="black"
               />
-            ))}
-          </Picker>
-        </View>
+            </TouchableOpacity>
+          </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <Picker
+              selectedValue={selectedRole}
+              onValueChange={itemValue => setSelectedRole(itemValue)}
+              style={styles.input}>
+              {roles.map(role => (
+                <Picker.Item
+                  key={role.id}
+                  label={role.name}
+                  value={role}
+                  style={styles.picker}
+                />
+              ))}
+            </Picker>
+          </View>
 
-        <View style={styles.signInContainer}>
-          <Text style={{color: 'black'}}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-            <Text style={styles.signInLink}>Sign In</Text>
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Register</Text>
           </TouchableOpacity>
-        </View>
 
-        {/* <ToastMsg /> */}
-      </View>
-    </ScrollView>
+          <View style={styles.signInContainer}>
+            <Text style={{color: 'black'}}>Already have an account?</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('LoginScreen')}>
+              <Text style={styles.signInLink}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* <ToastMsg /> */}
+        </View>
+      {/* <BottomView /> */}
+      </ScrollView>
+    </>
   );
 };
 
