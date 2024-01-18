@@ -51,7 +51,7 @@ const VideoPlayer: React.FC<{
               </TouchableOpacity>
             ) : null}
 
-            <View style={[styles.videoPlayer,{pointerEvents: index !== playingIndex ? "none" : "auto"}]}>
+            <View key={video.VideoID} style={[styles.videoPlayer,{pointerEvents: index !== playingIndex ? "none" : "auto"}]}>
               <YoutubeIframe
                 key={video.VideoID}
                 videoId={getVideoId(video.Video)}

@@ -78,6 +78,7 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
     // console.log('ORDER DETAILS::ORDER DATA', order);
     const data = {
       "userId": userId,
+      "totalMRP" : totalAmount,
       "BookHistory": order
     }
     // console.log("Final Order Data",data)

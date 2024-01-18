@@ -128,6 +128,7 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
               value={searchTerm}
               onChangeText={text => setSearchTerm(text)}
             />
+            <Icon name="search" size={20} color="grey" style={styles.searchIcon}/>
             {/* Implement filter dropdown bar here*/}
             <ModalDropdown
               options={['All', 'Pending', 'Confirmed', 'Cancelled']}
@@ -368,18 +369,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   searchInput: {
     flex: 1,
     height: responsiveHeight(4.6),
     borderColor: 'gray',
     borderWidth: 1,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     marginRight: 10,
     color: 'black',
     fontSize: responsiveFontSize(1.9),
-    borderRadius: 3,
+    borderRadius: 5,
+    paddingLeft: responsiveWidth(9),
   },
   dropdown: {
     width: responsiveWidth(30),
@@ -415,5 +417,10 @@ const styles = StyleSheet.create({
   dropdownItemText: {
     fontSize: responsiveFontSize(1.9),
     color: 'black',
+  },
+  searchIcon: {
+    position: 'absolute',
+    left: responsiveWidth(5),
+    top: responsiveHeight(1.2),
   },
 });

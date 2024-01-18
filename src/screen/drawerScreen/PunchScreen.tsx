@@ -11,7 +11,6 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackgroundActions from 'react-native-background-actions';
 import Header from '../../utils/Header';
-import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
 import {background_permission, requestPermission} from '../../utils/Permission';
 import Geolocation from 'react-native-geolocation-service';
 import {fetchUser, fetchtoken} from '../../utils/fetchItem';

@@ -67,7 +67,7 @@ const ViewHistory: React.FC<{navigation: any; route: any}> = ({
                   <Text style={styles.value}>₹ {element.mrp} </Text>
                 </View>
                 <View style={styles.field}>
-                  <Text style={styles.label}>Qunatity :</Text>
+                  <Text style={styles.label}>Quantity :</Text>
                   <Text style={styles.value}>{element.quantity}</Text>
                 </View>
                 <View style={styles.field}>

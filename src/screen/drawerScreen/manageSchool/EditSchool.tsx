@@ -33,7 +33,10 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
       // Email is valid
       return true;
     } else {
-      toast.show('Please enter a valid email address.', {type: 'danger'});
+      toast.show('Please enter a valid email address.', {
+        type: 'danger',
+        style: {width: '90%'},
+      });
       return false;
     }
   };
@@ -61,7 +64,7 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
         return;
       }
 
-      if(formData.contact_no.length!==10) {
+      if (formData.contact_no.length !== 10) {
         toast.show('Please enter a valid contact number.', {
           type: 'danger',
           style: {width: '90%'},
