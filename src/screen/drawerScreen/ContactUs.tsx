@@ -16,11 +16,11 @@ const ContactUs: React.FC<{navigation:any}> = ({navigation}) => {
         <Text style={styles.header}>Contact Us</Text>
         <Text style={styles.information}>
           <Text style={styles.content}>Email ID -  </Text>
-          admin1234@gmail.com
+          info@bestwaypublication.com
         </Text>
         <Text style={styles.information}>
           <Text style={styles.content}>Contact No. -  </Text>
-          +91 1234567890
+          011-47073550
         </Text>
       </View>
     </ScrollView>

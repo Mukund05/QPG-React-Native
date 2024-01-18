@@ -301,3 +301,17 @@ export const mapUpdate = async (token: string | null ,data:any ) => {
     console.log('API::UPDATE MAP DATA::ERROR',error);
   }
 }
+
+export const placeOrder = async (token: string | null ,data:any ) => {
+  try {
+    const response = await api.post('order/store',data,{
+      headers : {
+        Authorization : `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    return response.data;
+  } catch (error) {
+    console.log('API::PLACE ORDER::ERROR',error);
+  }
+}

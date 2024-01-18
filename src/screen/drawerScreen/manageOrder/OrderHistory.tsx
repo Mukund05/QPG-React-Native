@@ -78,11 +78,17 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
     return `${day}/${month}/${year}`;
   }
 
-// Data status, 1--> confirm, 0 --> pending, 2 --> cancel
-const onStatusSelect = (index: number) => {
-  setSelectedStatus(index); // Immediately apply filtering
-};
-
+  // Data status, 1--> confirm, 0 --> pending, 2 --> cancel
+  const onStatusSelect = (index: number) => {
+    setSelectedStatus(index); // Immediately apply filtering
+    const filteredData = selector.orderData.filter((item: any) =>
+      index === 0
+        ? true // Show all orders initially
+        : item.status === index - 1,
+    );
+    // console.log('FILTERED DATA', filteredData);
+    setData(filteredData);
+  };
 
   return (
     <>
@@ -179,10 +185,7 @@ const onStatusSelect = (index: number) => {
                   (item: any) =>
                     item.id.toString().includes(searchTerm) ||
                     formatDate(item.created_at).includes(searchTerm) ||
-                    item.total_amount.toString().includes(searchTerm) ||
-                    (selectedStatus === null
-                      ? true // Show all orders initially
-                      : item.status === selectedStatus - 1)
+                    item.total_amount.toString().includes(searchTerm)
                 )
                 .map((item: any) => (
                   <View
