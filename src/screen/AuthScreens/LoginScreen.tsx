@@ -18,8 +18,7 @@ import {useToast} from 'react-native-toast-notifications';
 import ForgetPasswordModal from './ForgetPassword';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../../store/Features/UserSlice.tsx';
-
-
+import Toast from 'react-native-toast-message';
 interface RememberMeCheckboxProps {
   checked: boolean;
   onPress: () => void;
@@ -102,7 +101,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
-  const Toast = useToast();
+  // const Toast = useToast();
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -164,9 +163,11 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
   const handleLogin = async () => {
     if (email.trim() === '' || password.trim() === '') {
-      Toast.show('Enter The Field Required', {
+      Toast.show({
         type: 'warning',
-        style: {width: '70%'},
+        text1: 'Please fill all the fields',
+        visibilityTime: 1500,
+        position: 'top',
       });
       return;
     }
@@ -188,10 +189,12 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
         await AsyncStorage.setItem('token', response?.data?.data?.token);
 
-        Toast.show('Login Success', {
+        Toast.show({
           type: 'success',
-          style: {width: '70%'},
-        });
+          text1: 'Login Successful',
+          visibilityTime: 1500,
+          position: 'top',
+        })
 
         navigation.reset({
           index: 0,
@@ -209,10 +212,13 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
         setRememberMe(false);
       }
     } catch (error) {
-      Toast.show('Login Failed. Please check your credentials.', {
+      Toast.show({
         type: 'error',
-        style: {width: '70%'},
-      });
+        text1: 'Invalid Credentials',
+        text2: 'Please check your email and password',
+        visibilityTime: 1500,
+        position: 'top',
+      })
     }
   };
 

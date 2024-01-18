@@ -19,6 +19,7 @@ import {fetchtoken} from '../../../utils/fetchItem';
 import {useToast} from 'react-native-toast-notifications';
 import {setUser} from '../../../store/Features/UserSlice';
 import Header from '../../../utils/Header';
+import Toast from 'react-native-toast-message';
 
 const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const dispatch = useDispatch();
@@ -37,10 +38,11 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const toast = useToast();
   const handleUpdateProfile = async () => {
     if (name === '') {
-      toast.show('Name is required', {
-        type: 'danger',
-        placement: 'top',
-        style: {width: '80%'},
+      Toast.show({
+        type: 'warning',
+        text1: 'Please enter your name',
+        visibilityTime: 1500,
+        position: 'top',
       });
       return;
     }
@@ -70,10 +72,12 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
 
         if (response.data.status === 1) {
           setLoader(false);
-          toast.show('Profile updated successfully', {
+          Toast.show({
             type: 'success',
-            placement: 'top',
-          });
+            text1: 'Profile updated successfully',
+            visibilityTime: 1500,
+            position: 'top',
+          })
 
           const updatedUser = {
             ...user,

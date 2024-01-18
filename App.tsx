@@ -14,6 +14,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {Provider} from 'react-redux';
 import Store from './src/store/Store';
+import Toast from 'react-native-toast-message';
+import ToastConfig from './src/utils/toastConfig';
 
 function App(): React.JSX.Element {
   return (
@@ -35,6 +37,7 @@ function App(): React.JSX.Element {
       swipeEnabled={true}>
       <Provider store={Store}>
         <AppNavigator />
+        <Toast config={ToastConfig}/>
       </Provider>
     </ToastProvider>
   );

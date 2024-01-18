@@ -9,15 +9,15 @@ import {
 } from 'react-native';
 import {changePassword} from '../../../../api/api';
 import {fetchtoken} from '../../../../utils/fetchItem';
-import {useToast} from 'react-native-toast-notifications';
 import PasswordInput from './PasswordInput'; // Make sure to import the PasswordInput component
 import Header from '../../../../utils/Header';
+import Toast from 'react-native-toast-message';
 
 const ChangePasswordScreen: React.FC<{navigation: any}> = ({navigation} ) => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const Toast = useToast();
+  // const Toast = useToast();
 
   const handleUpdateProfile = async () => {
     // Add your logic for updating the changing password
@@ -26,23 +26,31 @@ const ChangePasswordScreen: React.FC<{navigation: any}> = ({navigation} ) => {
       newPassword.trim() === '' ||
       confirmPassword.trim() === ''
     ) {
-      Toast.show('Please fill all the fields!', {
-        type: 'danger',
-        style: {width: '80%'},
+      Toast.show({
+        type: 'warning',
+        text1: 'Please fill all the fields',
+        visibilityTime: 1500,
+        position: 'top',
       });
       return;
     }
     if (newPassword !== confirmPassword) {
-      Toast.show('Password does not match!', {
-        type: 'danger',
-      });
+      Toast.show({
+        type: 'warning',
+        text1: 'Password does not match',
+        visibilityTime: 1500,
+        position: 'top',
+      })
       return;
     }
 
     if (oldPassword === newPassword || oldPassword === confirmPassword) {
-      Toast.show('Password cannot be same!', {
+      Toast.show({
         type: 'warning',
-      });
+        text1: 'New Password cannot be same as old password',
+        visibilityTime: 1500,
+        position: 'top',
+      })
       return;
     }
 
@@ -51,18 +59,24 @@ const ChangePasswordScreen: React.FC<{navigation: any}> = ({navigation} ) => {
       const response = await changePassword(token, oldPassword, newPassword);
 
       if (response.data.status === true) {
-        Toast.show(response.data.message, {
+        Toast.show({
           type: 'success',
-        });
+          text1: 'Password changed successfully',
+          visibilityTime: 1500,
+          position: 'top',
+        })
 
         setOldPassword('');
         setNewPassword('');
         setConfirmPassword('');
       }
     } catch (error: any) {
-      Toast.show('Please Check Your password!', {
-        type: 'danger',
-      });
+      Toast.show({
+        type: 'error',
+        text1: error.response.data.message,
+        visibilityTime: 1500,
+        position: 'top',
+      })
     }
   };
 

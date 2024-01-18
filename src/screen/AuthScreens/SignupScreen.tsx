@@ -12,8 +12,9 @@ import CustomModal from '../../utils/WarningModal';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import {useToast} from 'react-native-toast-notifications';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {register} from '../../api/api';
+import Toast from 'react-native-toast-message';
 
 const roles = [
   {id: 3, name: 'Teacher'},
@@ -30,22 +31,27 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  const toast = useToast();
 
   const handleRegister = async () => {
     // Use Toast for error message
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (name.trim() === '' || email.trim() === '' || password.trim() === '') {
-      toast.show('Enter The Field Required', {
+      Toast.show({
         type: 'warning',
+        text1: 'Please fill all the fields',
+        visibilityTime: 1500,
+        position: 'top',
       });
       return;
     }
 
     if (!emailRegex.test(email)) {
-      toast.show('Enter a valid email address', {
+      Toast.show({
         type: 'warning',
+        text1: 'Please enter a valid email address',
+        visibilityTime: 1500,
+        position: 'top',
       });
       return;
     }
@@ -66,8 +72,11 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
       });
 
       if (response.status === 200) {
-        toast.show('User Created successfully', {
+        Toast.show({
           type: 'success',
+          text1: 'Registration Successful',
+          visibilityTime: 1500,
+          position: 'top',
         });
 
         setName('');
@@ -81,9 +90,7 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
       }
     } catch (error: any) {
       console.log('Register Screen', error);
-      toast.show('Something Wrong Contact Admin', {
-        type: 'warning',
-      });
+      Toast.show({text1: 'Something Wrong Contact Admin', type: 'warning'});
     }
   };
 
@@ -164,6 +171,8 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
             <Text style={styles.signInLink}>Sign In</Text>
           </TouchableOpacity>
         </View>
+
+        {/* <ToastMsg /> */}
       </View>
     </ScrollView>
   );

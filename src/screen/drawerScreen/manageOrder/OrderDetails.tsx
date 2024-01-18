@@ -17,6 +17,7 @@ import {
 import {useToast} from 'react-native-toast-notifications';
 import { placeOrder } from '../../../api/api';
 import { fetchtoken } from '../../../utils/fetchItem';
+import Toast from 'react-native-toast-message';
 
 const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   const dispatch = useDispatch();
@@ -57,19 +58,23 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
     type: string,
   ) => {
     if (type === 'sub' && quantity === 1) {
-      toast.show('Quantity cannot be less than 1', {
-        type: 'danger',
-        style: {width: '90%'},
-      });
+      Toast.show({
+        type: 'error',
+        text1: 'Quantity cannot be less than 1',
+        visibilityTime: 1000,
+        position: 'top',
+      })
       return;
     }
     const newQuantity = type === 'add' ? quantity + 1 : quantity - 1;
     dispatch(updateQuantity({itemId, newQuantity}));
     updateAsyncStorage(itemId, newQuantity);
-    toast.show('Quantity updated successfully', {
+    Toast.show({
       type: 'success',
-      style: {width: '90%'},
-    });
+      text1: 'Quantity updated successfully',
+      visibilityTime: 1000,
+      position: 'top',
+    })
   };
 
   const handleSubmit =async () => {
@@ -87,10 +92,12 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
       const response = await placeOrder(token,data);
       // console.log("Response from place order",response);
       if(response.status === true){
-        toast.show('Order placed successfully', {
+        Toast.show({
           type: 'success',
-          style: {width: '90%'},
-        });
+          text1: 'Order placed successfully',
+          visibilityTime: 1500,
+          position: 'top',
+        })
         setOrderData([]);
         await AsyncStorage.removeItem(userId.toString());
         dispatch(addOrder([]));
@@ -109,10 +116,12 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   };
 
   const handleDeleteItem = (itemId: string) => {
-    toast.show('Item deleted successfully', {
+    Toast.show({
       type: 'success',
-      style: {width: '90%'},
-    });
+      text1: 'Item deleted successfully',
+      visibilityTime: 1000,
+      position: 'top',
+    })
     dispatch(deleteOrder(itemId));
     deleteFromAsyncStorage(itemId);
   };
