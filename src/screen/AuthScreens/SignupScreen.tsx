@@ -16,6 +16,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {register} from '../../api/api';
 import Toast from 'react-native-toast-message';
 import BottomView from '../../utils/BottomView';
+import { responsiveFontSize, responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 const roles = [
   {id: 3, name: 'Teacher'},
@@ -113,6 +114,7 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
               placeholderTextColor="black"
               value={name}
               onChange={e => setName(e.nativeEvent.text)}
+              cursorColor="black"
             />
           </View>
 
@@ -129,6 +131,7 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
               value={email}
               onChange={e => setEmail(e.nativeEvent.text)}
               placeholderTextColor="black"
+              cursorColor="black"
             />
           </View>
 
@@ -141,6 +144,7 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
               onChangeText={text => setPassword(text)}
               style={styles.textInput}
               placeholderTextColor="black"
+              cursorColor="black"
             />
             <TouchableOpacity onPress={handleTogglePasswordVisibility}>
               <FeatherIcon
@@ -190,82 +194,86 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    paddingTop: 50,
+    padding: responsiveScreenHeight(2.3),
+    paddingTop: responsiveScreenHeight(10),
     backgroundColor: '#89B9AD',
   },
   item: {
-    marginVertical: '20%',
+    marginVertical: responsiveScreenHeight(7),
     justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: responsiveFontSize(3.4),
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: responsiveScreenHeight(3),
     color: '#116A7B',
     textAlign: 'center',
   },
   inputContainer: {
-    marginBottom: 20,
-    marginTop: 10,
+    marginBottom: responsiveScreenHeight(3.7),
+    marginTop: responsiveScreenHeight(1.8),
     borderWidth: 1,
-    borderRadius: 50,
+    borderRadius: responsiveScreenHeight(4),
   },
   input: {
-    padding: 10,
-    height: 55,
+    padding: responsiveScreenHeight(1.5),
+    height: responsiveScreenHeight(6),
     color: 'black',
   },
   picker: {
     width: '100%',
-    height: 55,
-    color: 'darkgrey',
+    height: responsiveScreenHeight(5),
+    color: 'green',
   },
   button: {
     backgroundColor: '#374259',
-    padding: 15,
-    borderRadius: 5,
+    padding: responsiveScreenHeight(1.5),
+    borderRadius: responsiveScreenHeight(4),
     alignItems: 'center',
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+    fontSize: responsiveFontSize(2.2),
+    textTransform: 'uppercase',
+    letterSpacing: 4,
   },
   signInContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: responsiveScreenHeight(2),
   },
   signInLink: {
     color: '#007BFF',
-    marginLeft: 5,
+    marginLeft: responsiveScreenWidth(1),
   },
   label: {
     color: 'black',
     fontWeight: 'bold',
+    fontSize: responsiveFontSize(4.2),
   },
 
   action: {
     flexDirection: 'row',
-    paddingTop: 14,
-    paddingBottom: 3,
-    marginTop: 20,
+    paddingTop: responsiveScreenHeight(1.5),
+    paddingBottom: responsiveScreenHeight(0.5),
+    marginTop: responsiveScreenHeight(2),
 
-    paddingHorizontal: 15,
+    paddingHorizontal: responsiveScreenWidth(4),
 
     borderWidth: 1,
     borderColor: '#420475',
-    borderRadius: 50,
+    borderRadius: responsiveScreenHeight(5),
   },
   textInput: {
     flex: 1,
-    marginTop: -12,
+    marginTop: -responsiveScreenHeight(1.2),
 
     color: '#05375a',
   },
   smallIcon: {
-    marginRight: 10,
-    fontSize: 24,
+    marginRight: responsiveScreenWidth(2),
+    fontSize: responsiveScreenFontSize(2.9),
   },
 });
 
