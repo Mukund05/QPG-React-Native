@@ -12,8 +12,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const {width, height} = Dimensions.get('window');
 
 interface HeaderProps {
-    leftIcon?: string ;
-    rightIcon?: string;
+    leftIcon?: any;
+    rightIcon?: any;
     title?: string;
     onPressLeftIcon?: () => void;
     onPressRightIcon?: () => void;

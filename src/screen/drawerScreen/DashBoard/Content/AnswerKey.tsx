@@ -2,6 +2,7 @@ import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import React from 'react';
 import PDFViewer from './VidPdfLogix.tsx/PDFViewer';
 import Header from '../../../../utils/Header';
+import { responsiveFontSize, responsiveScreenHeight } from 'react-native-responsive-dimensions';
 
 const AnswerKey: React.FC<{route: any; navigation: any}> = ({
   route,
@@ -48,17 +49,17 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 20,
+    fontSize: responsiveFontSize(2.5),
+    marginTop: responsiveScreenHeight(5),
   },
   pdfContainer: {
     backgroundColor: 'transparent',
     width: '100%',
     height: '100%',
-    marginVertical: 5,
+    marginVertical: responsiveScreenHeight(1),
     justifyContent: 'center',
     alignContent: 'center',
-    borderRadius: 10,
+    borderRadius: responsiveScreenHeight(1),
     overflow: 'hidden',
     objectFit: 'cover',
   },

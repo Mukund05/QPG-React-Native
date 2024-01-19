@@ -167,12 +167,13 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
     // console.log(coords)
     const {id} = await fetchUser();
     const token = await fetchtoken();
+    console.log('punchOut time ',punchOutTime)
     const data = {
       user_id: id,
       coors: JSON.stringify(coords),
       inTime: punchedInTime===undefined ? timeModifier(new Date()) : timeModifier(punchedInTime),
       outTime: timeModifier(punchOutTime),
-      duration: formatTime(timer),
+      // duration: formatTime(timer),
     };
     console.log('Data to be sent :: ', data);
     try {

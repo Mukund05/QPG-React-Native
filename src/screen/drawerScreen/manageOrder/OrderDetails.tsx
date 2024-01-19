@@ -229,7 +229,7 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                   </View>
                 </View>
                 <View style={styles.field}>
-                  <Text style={styles.label}>Discount :</Text>
+                  <Text style={styles.label}>Discount (%) :</Text>
                   <Text style={styles.value}>
                     {item.discount === '' ? '0' : item?.discount}%{' '}
                   </Text>

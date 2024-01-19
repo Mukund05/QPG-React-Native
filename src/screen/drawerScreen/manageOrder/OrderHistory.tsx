@@ -20,6 +20,7 @@ import {RefreshControl} from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,
+  responsiveScreenHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -368,7 +369,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: responsiveScreenHeight(1.2),
+    minHeight: responsiveScreenHeight(4),
     // marginBottom: 10,
   },
   searchInput: {
@@ -377,6 +379,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     // paddingHorizontal: 10,
+    minHeight: responsiveScreenHeight(3.5),
     marginRight: 10,
     color: 'black',
     fontSize: responsiveFontSize(1.9),

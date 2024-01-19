@@ -430,7 +430,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
 
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
-              <Text style={styles.label}>Discount</Text>
+              <Text style={styles.label}>Discount (%)</Text>
               <Icon
                 name="discount"
                 size={26}

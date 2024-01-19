@@ -20,7 +20,7 @@ const AddSchool: React.FC<{navigation: any}> = ({navigation}) => {
   const toast = useToast();
   const validateEmail = () => {
     // Regular expression for a valid email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@gmail\.com$/;
 
     if (emailRegex.test(email)) {
       // Email is valid
@@ -46,6 +46,11 @@ const AddSchool: React.FC<{navigation: any}> = ({navigation}) => {
       return;
     }
     if(!validateEmail()) return;
+
+    if(contact.length !== 10){
+      toast.show('Please enter a valid contact number.', {type: 'danger'});
+      return;
+    }
 
     const data = new FormData();
     data.append('name', name);

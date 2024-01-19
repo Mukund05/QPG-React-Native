@@ -27,7 +27,7 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
 
   const validateEmail = (val: any) => {
     // Regular expression for a valid email format
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[^\s@]+@gmail\.com$/;
 
     if (emailRegex.test(val)) {
       // Email is valid

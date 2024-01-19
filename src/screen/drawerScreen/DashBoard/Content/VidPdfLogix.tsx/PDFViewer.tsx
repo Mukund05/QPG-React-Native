@@ -3,6 +3,8 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,
+  responsiveScreenHeight,
+  responsiveScreenWidth,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -41,8 +43,8 @@ const PDFViewer: React.FC<
           onPress={() => handlePdfClick(screen==='book' ? pdf.Book :pdf.Pdf)}
           style={styles.pdfItem}>
           <View style={styles.pdfInfo} >
-            <Icon name="file-pdf-o" size={200} color="red" />
-            <Text style={styles.pdfTitle}>{screen==='book' ? pdf.Title :pdf.Title}</Text>
+            <Icon name="file-pdf-o" size={responsiveFontSize(20)} color="red" />
+            <Text style={styles.pdfTitle} numberOfLines={2} ellipsizeMode='tail'>{screen==='book' ? pdf.Title :pdf.Title}</Text>
           </View>
         </TouchableOpacity>
       ))}
@@ -62,19 +64,19 @@ const styles = StyleSheet.create({
   },
   pdfItem: {
     overflow: 'hidden',
-    position: 'relative',
-    width: responsiveWidth(43),
-    height: responsiveHeight(30),
-    backgroundColor: 'white',
-    borderRadius: 15,
-    shadowRadius: 2,
-    shadowOffset: {
-      width: 0,
-      height: -3,
-    },
-    shadowColor: '#000000',
-    elevation: 5,
-    shadowOpacity: 1.0,
+    // position: 'relative',
+    width: responsiveScreenWidth(43),
+    height: responsiveScreenHeight(24),
+    backgroundColor: 'transparent',
+    borderRadius: responsiveScreenHeight(1),
+    // shadowRadius: 2,
+    // shadowOffset: {
+      // width: 0,
+      // height: -3,
+    // },
+    // shadowColor: '#000000',
+    // elevation: 5,
+    // shadowOpacity: 1.0,
     marginBottom: responsiveHeight(1),
     margin: 10,
   },
@@ -82,13 +84,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   pdfTitle: {
-    fontSize: responsiveFontSize(2.0),
+    fontSize: responsiveFontSize(1.9),
     color: 'black',
     fontWeight: '600',
     textAlign: 'center',
+    marginTop: responsiveHeight(1),
   },
   desc: {
-    fontSize: responsiveFontSize(1.5),
+    fontSize: responsiveFontSize(1.2),
     color: 'black',
     fontWeight: '400',
     textAlign: 'center',
