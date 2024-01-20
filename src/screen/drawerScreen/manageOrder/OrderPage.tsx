@@ -472,7 +472,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                   </View>
                   <View style={styles.tableCell}>
                     <Text style={styles.tableCellText}>
-                      {price ? price?.mrp : 'No Price'}
+                    ₹ {price ? price?.mrp : 'No Price'}
                     </Text>
                   </View>
                 </View>

@@ -94,17 +94,17 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   };
 
   const handlePunchOut = async () => {
-    if (timerData) {
-      const time = new Date();
-      setTimerData(false);
-      setPunchOutTime(time);
-      stopBackgroundTimer();
-      try {
-        await AsyncStorage.removeItem('punchIn');
-        await AsyncStorage.removeItem('punchedInTime');
-      } catch (error) {
-        console.error('Error storing data:', error);
-      }
+    const time = new Date();
+    setTimerData(false);
+    setPunchOutTime(time);
+    stopBackgroundTimer();
+    try {
+      console.log('punchOutTime', punchOutTime);
+      console.log('punchedInTime', punchedInTime);
+      await AsyncStorage.removeItem('punchIn');
+      await AsyncStorage.removeItem('punchedInTime');
+    } catch (error) {
+      console.error('Error storing data:', error);
     }
   };
 
@@ -167,11 +167,14 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
     // console.log(coords)
     const {id} = await fetchUser();
     const token = await fetchtoken();
-    console.log('punchOut time ',punchOutTime)
+    console.log('punchOut time ', punchOutTime);
     const data = {
       user_id: id,
       coors: JSON.stringify(coords),
-      inTime: punchedInTime===undefined ? timeModifier(new Date()) : timeModifier(punchedInTime),
+      inTime:
+        punchedInTime === undefined
+          ? timeModifier(new Date())
+          : timeModifier(punchedInTime),
       outTime: timeModifier(punchOutTime),
       // duration: formatTime(timer),
     };

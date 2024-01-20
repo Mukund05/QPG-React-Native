@@ -19,13 +19,15 @@ import ForgetPasswordModal from './ForgetPassword';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../../store/Features/UserSlice.tsx';
 
-
 interface RememberMeCheckboxProps {
   checked: boolean;
   onPress: () => void;
 }
 
-const RememberMeCheckbox: React.FC<RememberMeCheckboxProps> = ({ checked, onPress }) => (
+const RememberMeCheckbox: React.FC<RememberMeCheckboxProps> = ({
+  checked,
+  onPress,
+}) => (
   <TouchableOpacity onPress={onPress}>
     <View style={[styles.checkboxContainer, checked && styles.checked]}>
       <View style={[styles.checkbox, checked && styles.checked]}>
@@ -128,8 +130,13 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
             });
           } catch (error) {
             Alert.alert('Error', 'Invalid user credentials');
+
             await AsyncStorage.removeItem('user');
             await AsyncStorage.removeItem('token');
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'LoginScreen'}],
+            });
           }
         }
       } catch (error) {

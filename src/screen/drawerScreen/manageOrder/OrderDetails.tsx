@@ -1,4 +1,4 @@
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
+import {View, Text, ScrollView, StyleSheet, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../../../utils/Header';
 import {
@@ -109,6 +109,26 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   };
 
   const handleDeleteItem = (itemId: string) => {
+    Alert.alert(
+      'Delete Item',
+      'Are you sure you want to delete this item?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => confirmDeleteItem(itemId),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const confirmDeleteItem = (itemId: string) => {
+
+
     toast.show('Item deleted successfully', {
       type: 'success',
       style: {width: '90%'},
