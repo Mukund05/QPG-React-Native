@@ -20,7 +20,7 @@ import {
   getPrice,
   getSubjects,
 } from '../../../api/api';
-import {responsiveHeight} from 'react-native-responsive-dimensions';
+import {responsiveFontSize, responsiveHeight} from 'react-native-responsive-dimensions';
 import {useDispatch} from 'react-redux';
 import {addOrder} from '../../../store/Features/OrderSlice';
 import {useToast} from 'react-native-toast-notifications';
@@ -514,7 +514,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                     <Text
                       style={[
                         styles.tableCellText,
-                        {fontSize: 20, fontWeight: '500'},
+                        {fontSize: responsiveFontSize(2), fontWeight: '500'},
                       ]}>
                       Sub Total :
                     </Text>
@@ -522,7 +522,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                       <Text
                         style={[
                           styles.tableCellText,
-                          {fontSize: 20, fontWeight: '500'},
+                          {fontSize: responsiveFontSize(2), fontWeight: '500'},
                         ]}>
                         Discount :
                       </Text>
@@ -532,7 +532,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                     <Text
                       style={[
                         styles.tableCellText,
-                        {fontSize: 20, fontWeight: '500'},
+                        {fontSize: responsiveFontSize(2), fontWeight: '500'},
                       ]}>
                       ₹ {price ? price?.mrp * quantity : 0}
                     </Text>
@@ -540,7 +540,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                       <Text
                         style={[
                           styles.tableCellText,
-                          {fontSize: 20, fontWeight: '500'},
+                          {fontSize: responsiveFontSize(2), fontWeight: '500'},
                         ]}>
                         {discount ? discount : 0}%
                       </Text>
@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   input: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(2.2),
     fontWeight: '500',
     color: 'black',
     marginTop: 10,
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     fontWeight: '400',
     color: 'black',
     marginTop: 10,
@@ -623,7 +623,7 @@ const styles = StyleSheet.create({
   button: {
     color: 'white',
     backgroundColor: '#11235A',
-    fontSize: 18,
+    fontSize: responsiveFontSize(2.4),
     fontWeight: 'bold',
     borderWidth: 1,
     paddingHorizontal: 20,
@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
   },
   filed: {
     color: 'white',
-    fontSize: 18,
+    fontSize: responsiveFontSize(2.3),
     fontWeight: 'bold',
     textTransform: 'capitalize',
     textAlign: 'center',
@@ -687,7 +687,7 @@ const styles = StyleSheet.create({
   tableCellText: {
     textAlign: 'center',
     color: '#000',
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
   },
   tableFooter: {
@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   subtotal: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'green',
   },
@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
   quantityInput: {
     textAlign: 'center',
     paddingVertical: 3,
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     color: 'black',
     fontWeight: 'bold',
   },

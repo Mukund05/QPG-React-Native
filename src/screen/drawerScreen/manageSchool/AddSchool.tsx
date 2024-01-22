@@ -7,6 +7,7 @@ import {addSchool} from '../../../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useToast } from 'react-native-toast-notifications';
 import Toast from 'react-native-toast-message';
+import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 const AddSchool: React.FC<{navigation: any}> = ({navigation}) => {
   const [name, setName] = useState('');
@@ -275,16 +276,16 @@ export default AddSchool;
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    padding: 20,
+    padding: responsiveScreenHeight(1.6),
     backgroundColor: '#fff',
   },
   inputContainer: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: responsiveScreenHeight(2),
   },
   label: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: responsiveFontSize(2.2),
+    marginBottom: responsiveScreenHeight(1),
     color: 'grey',
     fontWeight: '700',
   },
@@ -292,28 +293,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#000',
     borderRadius: 10,
-    fontSize: 16,
-    padding: 10,
+    fontSize: responsiveFontSize(2),
+    padding: responsiveScreenHeight(1.2),
     color: '#000',
   },
   bottomContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: responsiveScreenWidth(5),
     backgroundColor: 'white',
-    paddingVertical: 20,
+    paddingVertical: responsiveScreenHeight(2),
   },
   button: {
-    marginHorizontal: 10,
+    marginHorizontal: responsiveScreenWidth(2.5),
     backgroundColor: '#000',
-    padding: 10,
+    padding: responsiveScreenHeight(1.4),
     borderRadius: 5,
-    paddingHorizontal: 25,
+    paddingHorizontal: responsiveScreenWidth(7.5),
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: responsiveFontSize(2.2),
     fontWeight: 'bold',
+    letterSpacing: 1,
   },
 });

@@ -12,6 +12,7 @@ import {fetchtoken} from '../../../../utils/fetchItem';
 import PasswordInput from './PasswordInput'; // Make sure to import the PasswordInput component
 import Header from '../../../../utils/Header';
 import Toast from 'react-native-toast-message';
+import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 const ChangePasswordScreen: React.FC<{navigation: any}> = ({navigation} ) => {
   const [oldPassword, setOldPassword] = useState('');
@@ -131,36 +132,27 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: responsiveScreenHeight(2),
   },
   profileImage: {
-    width: 150,
-    height: 150,
+    width: responsiveScreenWidth(40),
+    height: responsiveScreenHeight(17),
     borderRadius: 75,
-    marginBottom: 20,
-  },
-  changePasswordLink: {
-    marginBottom: 20,
-    alignSelf: 'flex-end',
-    marginEnd: 40,
-  },
-  changePasswordText: {
-    color: 'blue',
-    fontSize: 16,
-    fontWeight: 'bold',
+    marginBottom: responsiveScreenHeight(2),
   },
   updateProfileButton: {
     backgroundColor: 'blue',
-    padding: 20,
+    padding: responsiveScreenHeight(2),
     borderRadius: 5,
     width: '90%',
-    marginTop: 30,
+    marginTop: responsiveScreenHeight(2),
   },
   buttonText: {
     color: 'white',
     textAlign: 'center',
     textTransform: 'uppercase',
     fontWeight: 'bold',
+    letterSpacing: 2,
   },
 });
 

@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   colorText: {
     marginRight: 5,
     color: 'black',
-    fontSize: 12,
+    fontSize: responsiveFontSize(1.3),
     fontWeight: '500',
   },
   orderDetails: {
@@ -311,19 +311,19 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontWeight: 'bold',
     color: 'white',
-    fontSize: 18,
+    fontSize: responsiveFontSize(1.9),
     alignSelf: 'flex-start',
     marginStart: 12,
   },
   details: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.9),
     fontWeight: 'bold',
     marginEnd: 12,
     color: 'white',
     alignSelf: 'flex-end',
   },
   comma: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.9),
     fontWeight: 'bold',
     color: 'black',
     position: 'absolute',
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.9),
     fontWeight: 'bold',
     textAlign: 'center',
   },

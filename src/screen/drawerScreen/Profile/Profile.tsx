@@ -20,6 +20,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {setUser} from '../../../store/Features/UserSlice';
 import Header from '../../../utils/Header';
 import Toast from 'react-native-toast-message';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const dispatch = useDispatch();
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
   },
   changePasswordText: {
     color: 'blue',
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
   },
   input: {

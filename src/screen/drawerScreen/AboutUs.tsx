@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Header from '../../utils/Header'
+import { responsiveFontSize, responsiveScreenHeight } from 'react-native-responsive-dimensions'
 
 const AboutUs:React.FC<{navigation:any}> = ({navigation}) => {
   return (
@@ -31,19 +32,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     height: '100%',
-    margin:20,
+    margin:responsiveScreenHeight(2),
     borderRadius: 10,
   },
   header: {
-    fontSize: 30,
+    fontSize: responsiveFontSize(3),
     fontWeight: 'bold',
     textAlign: 'center',
-    margin: 20,
+    margin: responsiveScreenHeight(2),
     color: "#2483ff",
   },
   content:{
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     margin: 20,
     color: "black",
+    textAlign: 'justify',
+    fontWeight: '300',
+    letterSpacing: 1,
+    lineHeight: 22,
   }
 })

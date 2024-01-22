@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 const ForgetPasswordModal: React.FC = () => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     width: 300,
   },
   modalText: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(1.6),
     fontWeight: 'bold',
     marginBottom: 10,
     color: 'black',

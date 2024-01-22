@@ -6,6 +6,7 @@ import { fetchtoken } from '../../utils/fetchItem';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useToast } from 'react-native-toast-notifications';
 import Toast from 'react-native-toast-message';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
     const [school,setSchool] = React.useState<any>([]);
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
       marginBottom: 20,
     },
     label: {
-      fontSize: 18,
+      fontSize: responsiveFontSize(2),
       marginBottom: 10,
       color: 'grey',
       fontWeight: '700',
@@ -239,7 +240,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: '#000',
       borderRadius: 10,
-      fontSize: 16,
+      fontSize: responsiveFontSize(2),
       padding: 10,
       color: '#000',
     },
@@ -261,9 +262,11 @@ const styles = StyleSheet.create({
     },
     buttonText: {
       color: '#fff',
-      fontSize: 18,
+      fontSize: responsiveFontSize(2.5),
       fontWeight: 'bold',
-      textAlign:'center'
+      textAlign:'center',
+      letterSpacing:2,
+      textTransform:'uppercase'
     },
     labelContainer: {
       flexDirection: 'row',
@@ -272,7 +275,7 @@ const styles = StyleSheet.create({
     },
     filed: {
       color: 'white',
-      fontSize: 18,
+      fontSize: responsiveFontSize(2.4),
       fontWeight: 'bold',
       textTransform: 'capitalize',
       textAlign: 'center',

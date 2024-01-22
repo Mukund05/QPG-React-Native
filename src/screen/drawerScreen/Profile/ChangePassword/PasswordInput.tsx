@@ -1,5 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, StyleProp, ViewStyle, Text} from 'react-native';
+import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install the 'expo-vector-icons' package
 
 interface PasswordInputProps {
@@ -50,17 +51,17 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 const styles = StyleSheet.create({
   inputContainer: {
     width: '90%',
-    marginBottom: 20,
+    marginBottom: responsiveScreenHeight(2.5),
   },
   label: {
-    marginBottom: 8,
+    marginBottom: responsiveScreenHeight(1),
     color: '#333',
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 55,
+    height: responsiveScreenHeight(6),
     borderColor: '#ddd',
     borderWidth: 2,
     borderRadius: 8,
@@ -69,8 +70,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: '90%',
-    paddingHorizontal: 12,
-    fontSize: 16,
+    paddingHorizontal: responsiveScreenWidth(2),
+    fontSize: responsiveFontSize(2),
     color: '#333',
   },
   eyeIcon: {

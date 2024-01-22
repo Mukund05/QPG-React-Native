@@ -7,6 +7,7 @@ import {fetchtoken} from '../../../utils/fetchItem';
 import {editSchool} from '../../../api/api';
 import {useToast} from 'react-native-toast-notifications';
 import Toast from 'react-native-toast-message';
+import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 const EditSchool: React.FC<{navigation: any; route: any}> = ({
   navigation,
@@ -246,73 +247,53 @@ export default EditSchool;
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    padding: 20,
+    padding: responsiveScreenWidth(3),
     backgroundColor: '#fff',
   },
   inputContainer: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: responsiveScreenHeight(2),
   },
   label: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: responsiveFontSize(2.4),
+    marginBottom: responsiveScreenHeight(1),
     color: 'grey',
     fontWeight: '700',
   },
   input: {
     borderWidth: 1,
     borderColor: '#000',
-    borderRadius: 10,
-    fontSize: 16,
-    padding: 10,
+    borderRadius: responsiveScreenWidth(2),
+    fontSize: responsiveFontSize(2.1),
+    padding: responsiveScreenWidth(2),
     color: '#000',
   },
   bottomViewContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: responsiveScreenWidth(2),
     backgroundColor: 'white',
-    paddingVertical: 20,
+    paddingVertical: responsiveScreenHeight(2.3),
   },
   button: {
-    marginHorizontal: 10,
+    marginHorizontal: responsiveScreenWidth(2),
     backgroundColor: '#000',
-    padding: 10,
-    borderRadius: 5,
-    paddingHorizontal: 25,
+    padding: responsiveScreenWidth(2),
+    borderRadius: responsiveScreenWidth(1),
+    paddingHorizontal: responsiveScreenWidth(5),
     width: '90%',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: responsiveFontSize(2.5),
     fontWeight: 'bold',
     textAlign: 'center',
+    letterSpacing:1,
   },
   labelContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  filed: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textTransform: 'capitalize',
-    textAlign: 'center',
-  },
-  bottomContainer: {
-    padding: 10,
-    backgroundColor: '#1D5D9B',
-    marginVertical: 5,
-    width: '90%',
-    alignSelf: 'center',
-    borderRadius: 10,
-  },
-  textArea: {
-    textAlignVertical: 'top', // This ensures the text starts from the top
-    paddingTop: 10, // Adjust the padding as needed
-    height: 100, // Set an initial height
-    // Additional styles for the text area if needed
-  },
+  }
 });

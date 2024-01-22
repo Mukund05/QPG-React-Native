@@ -1,29 +1,57 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import Header from '../../utils/Header';
+import {
+  responsiveFontSize,
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from 'react-native-responsive-dimensions';
 
-const ContactUs: React.FC<{navigation:any}> = ({navigation}) => {
+const ContactUs: React.FC<{navigation: any}> = ({navigation}) => {
+  const handleEmailPress = () => {
+    Linking.openURL('mailto:info@bestwaypublication.com');
+  };
+
+  const handlePhonePress = () => {
+    Linking.openURL('tel:01147073550');
+  };
+
   return (
     <>
-    <Header
-      title="Contact Us"
-      leftIcon="menu"
-      onPressLeftIcon={() => navigation.openDrawer()}
-      bgColor="blue"
-    />
-    <ScrollView style={{flex: 1}} keyboardShouldPersistTaps="handled">
-      <View style={styles.container}>
-        <Text style={styles.header}>Contact Us</Text>
-        <Text style={styles.information}>
-          <Text style={styles.content}>Email ID -  </Text>
-          info@bestwaypublication.com
-        </Text>
-        <Text style={styles.information}>
-          <Text style={styles.content}>Contact No. -  </Text>
-          011-47073550
-        </Text>
-      </View>
-    </ScrollView>
+      <Header
+        title="Contact Us"
+        leftIcon="menu"
+        onPressLeftIcon={() => navigation.openDrawer()}
+        bgColor="blue"
+      />
+      <ScrollView style={{flex: 1}} keyboardShouldPersistTaps="handled">
+        <View style={styles.container}>
+          <Text style={styles.header}>Contact Us</Text>
+          <TouchableOpacity
+            style={styles.information}
+            onPress={handleEmailPress}>
+            <Text style={styles.text}>
+              <Text style={styles.content}>Email ID - </Text>
+              info@bestwaypublication.com
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.information}
+            onPress={handlePhonePress}>
+            <Text style={styles.text}>
+              <Text style={styles.content}>Contact No. - </Text>
+              011-47073550
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </>
   );
 };
@@ -36,29 +64,32 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     height: '100%',
-    margin: 20,
+    margin: responsiveScreenHeight(2),
     borderRadius: 10,
-    paddingBottom: 20,
+    paddingBottom: responsiveScreenHeight(4),
   },
   header: {
-    fontSize: 30,
+    fontSize: responsiveFontSize(3),
     fontWeight: 'bold',
     textAlign: 'center',
-    margin: 20,
+    margin: responsiveScreenHeight(2),
     color: '#2483ff',
   },
   content: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     color: 'blue',
     fontWeight: 'bold',
   },
   information: {
-    fontSize: 16,
+    alignSelf: 'flex-start',
+    marginLeft: responsiveScreenWidth(4),
+    marginVertical: responsiveScreenHeight(1),
+  },
+  text: {
+    fontSize: responsiveFontSize(2),
     alignSelf: 'flex-start',
     color: 'black',
     textAlign: 'justify',
     lineHeight: 25,
-    marginLeft: 20,
-    marginVertical: 10,
   },
 });

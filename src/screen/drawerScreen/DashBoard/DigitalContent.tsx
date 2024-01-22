@@ -12,6 +12,7 @@ import {
 import {getEbooks, getPdfs, getVideos} from '../../../api/api';
 import {fetchUser, fetchtoken} from '../../../utils/fetchItem';
 import Header from '../../../utils/Header';
+import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
   route,
@@ -136,38 +137,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: '10%',
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
   item: {
     backgroundColor: '#A1EEBD',
     borderRadius: 5,
-    padding: 20,
-    margin: 10,
+    padding: responsiveScreenHeight(2),
+    margin: responsiveScreenHeight(1),
     width: '90%',
   },
   text: {
     color: 'black',
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.6),
     fontWeight: 'bold',
-    marginLeft: 70,
+    marginLeft: responsiveScreenHeight(10),
   },
   image: {
-    width: 50,
-    height: 50,
+    width: responsiveScreenWidth(12),
+    height: responsiveScreenHeight(5),
     alignSelf: 'center',
     position: 'absolute',
     top: 10,
     left: 20,
   },
   rightIcon: {
-    width: 30,
-    height: 30,
+    width: responsiveScreenWidth(8),
+    height: responsiveScreenHeight(2),
     alignSelf: 'flex-end',
     position: 'absolute',
-    top: 20,
+    top: 25,
     right: 20,
   },
 });
