@@ -25,7 +25,6 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   const [punchedInTime, setPunchInTime] = useState<any>(undefined);
   const [punchOutTime, setPunchOutTime] = useState<any>(undefined);
   const [timer, setTimer] = useState<number>(0);
-  const [locationPermission, setLocationPermission] = useState('');
   const [cordinates, setCordinates] = useState<any>([]); // [{lat: 0, lng: 0}]
   const options = {
     taskName: 'Punch In',
@@ -96,11 +95,17 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   const handlePunchOut = async () => {
     const time = new Date();
     setTimerData(false);
-    setPunchOutTime(time);
-    stopBackgroundTimer();
+    // setPunchOutTime(time);
+    await stopBackgroundTimer(time,()=>{
+      try {
+        BackgroundActions.stop().then(() => {});
+      } catch (error) {
+        console.error('Error stopping BackgroundService:', error);
+      }
+    });
     try {
-      console.log('punchOutTime', punchOutTime);
-      console.log('punchedInTime', punchedInTime);
+      // console.log('punchOutTime', punchOutTime);
+      // console.log('punchedInTime', punchedInTime);
       await AsyncStorage.removeItem('punchIn');
       await AsyncStorage.removeItem('punchedInTime');
     } catch (error) {
@@ -171,12 +176,8 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
     const data = {
       user_id: id,
       coors: JSON.stringify(coords),
-      inTime:
-        punchedInTime === undefined
-          ? timeModifier(new Date())
-          : timeModifier(punchedInTime),
+      inTime: timeModifier(dateTime),
       outTime: timeModifier(punchOutTime),
-      // duration: formatTime(timer),
     };
     console.log('Data to be sent :: ', data);
     try {
@@ -231,12 +232,9 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
   };
 
   //will stop background activity of the app
-  const stopBackgroundTimer = () => {
-    try {
-      BackgroundActions.stop().then(() => {});
-    } catch (error) {
-      console.error('Error stopping BackgroundService:', error);
-    }
+  const stopBackgroundTimer =async (value:any,callback:Function) => {
+    setPunchOutTime(value);
+    await callback();
   };
 
   useEffect(() => {
