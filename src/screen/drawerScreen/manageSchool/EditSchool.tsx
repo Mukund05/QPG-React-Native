@@ -6,6 +6,7 @@ import {TouchableOpacity} from 'react-native';
 import {fetchtoken} from '../../../utils/fetchItem';
 import {editSchool} from '../../../api/api';
 import {useToast} from 'react-native-toast-notifications';
+import Toast from 'react-native-toast-message';
 
 const EditSchool: React.FC<{navigation: any; route: any}> = ({
   navigation,
@@ -33,10 +34,12 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
       // Email is valid
       return true;
     } else {
-      toast.show('Please enter a valid email address.', {
-        type: 'danger',
-        style: {width: '90%'},
-      });
+      Toast.show({
+        type: 'warning',
+        text1: 'Please enter a valid email address',
+        visibilityTime: 1500,
+        position: 'top',
+      })
       return false;
     }
   };
@@ -57,18 +60,22 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
         !formData?.country
       ) {
         // Alert if any required field is empty
-        toast.show('Please fill all the fields.', {
-          type: 'danger',
-          style: {width: '90%'},
-        });
+        Toast.show({
+          type: 'warning',
+          text1: 'Please fill all the fields',
+          visibilityTime: 1500,
+          position: 'top',
+        })
         return;
       }
 
       if (formData.contact_no.length !== 10) {
-        toast.show('Please enter a valid contact number.', {
-          type: 'danger',
-          style: {width: '90%'},
-        });
+        Toast.show({
+          type: 'warning',
+          text1: 'Please enter a valid contact number',
+          visibilityTime: 1500,
+          position: 'top',
+        })
         return;
       }
 
@@ -93,10 +100,12 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
       // Check if the request was successful
       if (response.status) {
         // School updated successfully
-        toast.show('School updated successfully.', {
+        Toast.show({
           type: 'success',
-          style: {width: '90%'},
-        });
+          text1: 'School updated successfully',
+          visibilityTime: 1500,
+          position: 'top',
+        })
 
         // You might want to navigate back to the previous screen or take any other actions
         navigation.goBack();
@@ -106,10 +115,13 @@ const EditSchool: React.FC<{navigation: any; route: any}> = ({
       }
     } catch (error) {
       console.log('EDIT::SCHOOL ERROR: ', error);
-      toast.show('Something went wrong.', {
-        type: 'danger',
-        style: {width: '90%'},
-      });
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: 'Please try again later',
+        visibilityTime: 1500,
+        position: 'top',
+      })
     }
   };
 

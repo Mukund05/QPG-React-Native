@@ -18,7 +18,8 @@ import {useToast} from 'react-native-toast-notifications';
 import ForgetPasswordModal from './ForgetPassword';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../../store/Features/UserSlice.tsx';
-
+import Toast from 'react-native-toast-message';
+import { responsiveFontSize, responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 interface RememberMeCheckboxProps {
   checked: boolean;
   onPress: () => void;
@@ -104,7 +105,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
-  const Toast = useToast();
+  // const Toast = useToast();
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -171,9 +172,11 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
   const handleLogin = async () => {
     if (email.trim() === '' || password.trim() === '') {
-      Toast.show('Enter The Field Required', {
+      Toast.show({
         type: 'warning',
-        style: {width: '70%'},
+        text1: 'Please fill all the fields',
+        visibilityTime: 1500,
+        position: 'top',
       });
       return;
     }
@@ -195,10 +198,12 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
         await AsyncStorage.setItem('token', response?.data?.data?.token);
 
-        Toast.show('Login Success', {
+        Toast.show({
           type: 'success',
-          style: {width: '70%'},
-        });
+          text1: 'Login Successful',
+          visibilityTime: 1500,
+          position: 'top',
+        })
 
         navigation.reset({
           index: 0,
@@ -216,10 +221,13 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
         setRememberMe(false);
       }
     } catch (error) {
-      Toast.show('Login Failed. Please check your credentials.', {
+      Toast.show({
         type: 'error',
-        style: {width: '70%'},
-      });
+        text1: 'Invalid Credentials',
+        text2: 'Please check your email and password',
+        visibilityTime: 1500,
+        position: 'top',
+      })
     }
   };
 
@@ -278,48 +286,49 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 20,
+    paddingTop: responsiveScreenHeight(10),
+    paddingHorizontal: responsiveScreenWidth(4),
     backgroundColor: '#89B9AD',
     height: '100%',
   },
   item: {
-    marginVertical: '20%',
+    marginVertical: responsiveScreenHeight(8),
     justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: responsiveFontSize(3.4),
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: responsiveScreenHeight(3),
     color: '#116A7B',
     textAlign: 'center',
   },
   toggleButton: {
-    padding: 10,
+    padding: responsiveScreenHeight(1.5),
     position: 'absolute',
     right: 0,
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-    width: '30%',
+    marginBottom: responsiveScreenHeight(2),
+    width: responsiveScreenWidth(100),
   },
   checkbox: {
-    width: 20,
-    height: 20,
+    width: responsiveScreenWidth(5),
+    height: responsiveScreenHeight(2.2),
     borderWidth: 2,
     borderColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 8,
+    marginRight: responsiveScreenWidth(3),
+    marginLeft: responsiveScreenWidth(1),
     borderRadius: 5,
-    marginTop: 20,
+    marginTop: responsiveScreenHeight(2),
   },
   remember: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(1.9),
     color: 'black',
-    marginTop: 16,
+    marginTop: responsiveScreenHeight(1.7),
   },
   checked: {
     borderColor: 'green',
@@ -327,30 +336,30 @@ const styles = StyleSheet.create({
   checkmark: {
     color: 'green',
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: responsiveFontSize(1.4),
   },
   forgotPassword: {
     alignSelf: 'center',
-    marginBottom: 16,
+    // marginBottom: responsiveScreenHeight(10),
     color: '#007BFF',
   },
   loginButton: {
     backgroundColor: '#374259',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 10,
+    paddingVertical: responsiveScreenHeight(1.2),
+    paddingHorizontal: responsiveScreenWidth(2),
+    borderRadius: responsiveScreenHeight(4),
+    marginBottom: responsiveScreenHeight(1.6),
     width: '100%',
-    marginTop: 20,
+    marginTop: responsiveScreenHeight(1),
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.5),
   },
   signupLink: {
-    marginTop: 10,
+    // marginTop: responsiveScreenHeight(0),
     color: '#007BFF',
     alignSelf: 'center',
   },
@@ -359,29 +368,29 @@ const styles = StyleSheet.create({
     borderBottomColor: 'black',
     borderWidth: 1,
     width: '100%',
-    marginVertical: 20,
+    marginVertical: responsiveScreenHeight(2),
   },
 
   action: {
     flexDirection: 'row',
-    paddingTop: 14,
-    paddingBottom: 3,
-    marginTop: 20,
+    paddingTop: responsiveScreenHeight(1.5),
+    paddingBottom: responsiveScreenHeight(0.5),
+    marginTop: responsiveScreenHeight(2),
 
-    paddingHorizontal: 15,
+    paddingHorizontal: responsiveScreenWidth(4),
 
     borderWidth: 1,
     borderColor: '#420475',
-    borderRadius: 50,
+    borderRadius: responsiveScreenHeight(5),
   },
   textInput: {
     flex: 1,
-    marginTop: -12,
+    marginTop: -responsiveScreenHeight(1),
 
     color: '#05375a',
   },
   smallIcon: {
-    marginRight: 10,
+    marginRight: responsiveScreenWidth(2),
     fontSize: 24,
   },
   loader: {

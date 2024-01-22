@@ -15,8 +15,9 @@ import {
   updateQuantity,
 } from '../../../store/Features/OrderSlice';
 import {useToast} from 'react-native-toast-notifications';
-import { placeOrder } from '../../../api/api';
-import { fetchtoken } from '../../../utils/fetchItem';
+import {placeOrder} from '../../../api/api';
+import {fetchtoken} from '../../../utils/fetchItem';
+import Toast from 'react-native-toast-message';
 
 const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
   const dispatch = useDispatch();
@@ -57,46 +58,52 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
     type: string,
   ) => {
     if (type === 'sub' && quantity === 1) {
-      toast.show('Quantity cannot be less than 1', {
-        type: 'danger',
-        style: {width: '90%'},
+      Toast.show({
+        type: 'error',
+        text1: 'Quantity cannot be less than 1',
+        visibilityTime: 1000,
+        position: 'top',
       });
       return;
     }
     const newQuantity = type === 'add' ? quantity + 1 : quantity - 1;
     dispatch(updateQuantity({itemId, newQuantity}));
     updateAsyncStorage(itemId, newQuantity);
-    toast.show('Quantity updated successfully', {
+    Toast.show({
       type: 'success',
-      style: {width: '90%'},
+      text1: 'Quantity updated successfully',
+      visibilityTime: 1000,
+      position: 'top',
     });
   };
 
-  const handleSubmit =async () => {
+  const handleSubmit = async () => {
     // Implement your logic for placing the order
-    const order= orderData;
+    const order = orderData;
     // console.log('ORDER DETAILS::ORDER DATA', order);
     const data = {
-      "userId": userId,
-      "totalMRP" : totalAmount,
-      "BookHistory": order
-    }
+      userId: userId,
+      totalMRP: totalAmount,
+      BookHistory: order,
+    };
     // console.log("Final Order Data",data)
     try {
       const token = await fetchtoken();
-      const response = await placeOrder(token,data);
+      const response = await placeOrder(token, data);
       // console.log("Response from place order",response);
-      if(response.status === true){
-        toast.show('Order placed successfully', {
+      if (response.status === true) {
+        Toast.show({
           type: 'success',
-          style: {width: '90%'},
+          text1: 'Order placed successfully',
+          visibilityTime: 1500,
+          position: 'top',
         });
         setOrderData([]);
         await AsyncStorage.removeItem(userId.toString());
         dispatch(addOrder([]));
       }
     } catch (error) {
-      console.log("Error in placing order",error)
+      console.log('Error in placing order', error);
     }
   };
 
@@ -122,16 +129,16 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
           onPress: () => confirmDeleteItem(itemId),
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
   };
 
   const confirmDeleteItem = (itemId: string) => {
-
-
-    toast.show('Item deleted successfully', {
+    Toast.show({
       type: 'success',
-      style: {width: '90%'},
+      text1: 'Item deleted successfully',
+      visibilityTime: 1000,
+      position: 'top',
     });
     dispatch(deleteOrder(itemId));
     deleteFromAsyncStorage(itemId);
@@ -266,15 +273,17 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
         </View>
       </ScrollView>
 
-      {orderData.length>0 &&  (<View style={styles.bottomContainer}>
-        <TouchableOpacity
-          style={styles.bottomBut}
-          onPress={() => handleSubmit()}>
-          <View>
-            <Text style={styles.bottomText}>Place Order</Text>
-          </View>
-        </TouchableOpacity>
-      </View>)}
+      {orderData.length > 0 && (
+        <View style={styles.bottomContainer}>
+          <TouchableOpacity
+            style={styles.bottomBut}
+            onPress={() => handleSubmit()}>
+            <View>
+              <Text style={styles.bottomText}>Place Order</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
     </>
   );
 };

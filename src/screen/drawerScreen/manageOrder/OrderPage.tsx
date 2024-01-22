@@ -26,6 +26,7 @@ import {addOrder} from '../../../store/Features/OrderSlice';
 import {useToast} from 'react-native-toast-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid';
+import Toast from 'react-native-toast-message';
 
 const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
   const [schoolName, setSchoolName] = useState<any>('');
@@ -198,10 +199,12 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     } catch (error) {
       // Handle the error appropriately, e.g., show an alert
       console.error('Error saving data to AsyncStorage:', error);
-      toast.show('Error Saving Data', {
-        type: 'danger',
-        style: {width: '90%'},
-      });
+      Toast.show({
+        type: 'error',
+        text1: 'Error saving data to AsyncStorage:',
+        visibilityTime: 1500,
+        position:'top',
+      })
     }
 
     dispatch(addOrder(data)); //dispatch the data inside orderSlice
@@ -209,10 +212,12 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
 
     handleReset(); // Reset all states
 
-    toast.show('Book Added Successfully', {
+    Toast.show({
       type: 'success',
-      style: {width: '90%'},
-    });
+      text1: 'Book Added Successfully',
+      visibilityTime: 1500,
+      position:'top',
+    })
     navigation.navigate("Order Page")
   };
 
@@ -386,7 +391,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
               />
             </View>
             {/* add school list using react native raw bottom sheet */}
-            <TouchableOpacity onPress={() => subjectSheetRef.current?.open()}>
+            <TouchableOpacity disabled={className===''} onPress={() => subjectSheetRef.current?.open()}>
               <TextInput
                 placeholder="Select Subject"
                 placeholderTextColor="grey"

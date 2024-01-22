@@ -42,6 +42,7 @@ import ViewHistory from '../screen/drawerScreen/manageOrder/ViewHistory';
 import SubmitReport from '../screen/drawerScreen/SubmitReport';
 import ViewSchool from '../screen/drawerScreen/manageSchool/ViewSchool';
 import EditSchool from '../screen/drawerScreen/manageSchool/EditSchool';
+import Toast from 'react-native-toast-message';
 
 const Drawer = createDrawerNavigator();
 
@@ -155,6 +156,11 @@ const DrawerLayout: React.FC<{
               navigation.reset({
                 index: 0,
                 routes: [{name: 'LoginScreen' as never}],
+              });
+              Toast.show({
+                type: 'success',
+                text1: 'Logout Success',
+                position: 'top',
               });
             }
           } catch (error) {

@@ -6,6 +6,7 @@ import {TouchableOpacity} from 'react-native';
 import {addSchool} from '../../../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useToast } from 'react-native-toast-notifications';
+import Toast from 'react-native-toast-message';
 
 const AddSchool: React.FC<{navigation: any}> = ({navigation}) => {
   const [name, setName] = useState('');
@@ -26,7 +27,12 @@ const AddSchool: React.FC<{navigation: any}> = ({navigation}) => {
       // Email is valid
       return true;
     } else {
-      toast.show('Please enter a valid email address.', {type: 'danger'});
+      Toast.show({
+        type: 'warning',
+        text1: 'Please enter a valid email address',
+        visibilityTime: 1500,
+        position: 'top',
+      })
       return false
     }
   };
@@ -42,7 +48,12 @@ const AddSchool: React.FC<{navigation: any}> = ({navigation}) => {
       state === '' ||
       country === ''
     ) {
-      toast.show('Please fill all the fields.', {type: 'danger'});
+      Toast.show({
+        type: 'warning',
+        text1: 'Please fill all the fields',
+        visibilityTime: 1500,
+        position: 'top',
+      });
       return;
     }
     if(!validateEmail()) return;
@@ -67,7 +78,12 @@ const AddSchool: React.FC<{navigation: any}> = ({navigation}) => {
       const response = await addSchool(token, data);
       console.log('ADD SCHOOL::RESPONSE', response);
       if (response.status) {
-        toast.show('School added successfully.', {type: 'success'});
+        Toast.show({
+          type: 'success',
+          text1: 'School added successfully',
+          visibilityTime: 1500,
+          position: 'top',
+        })
         setName('');
         setStrength('');
         setEmail('');
@@ -78,7 +94,13 @@ const AddSchool: React.FC<{navigation: any}> = ({navigation}) => {
         setCountry('');
       }
     } catch (error) {
-      toast.show('Something went wrong.', {type: 'danger'});
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: 'Please try again later',
+        visibilityTime: 1500,
+        position: 'top',
+      })
       console.log('ADD SCHOOL::ERROR', error);
     }
   };

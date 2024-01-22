@@ -5,6 +5,7 @@ import { getAllSchools, sendRemarks } from '../../api/api';
 import { fetchtoken } from '../../utils/fetchItem';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useToast } from 'react-native-toast-notifications';
+import Toast from 'react-native-toast-message';
 
 const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
     const [school,setSchool] = React.useState<any>([]);
@@ -23,34 +24,34 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
 
     const handlesubmitReport =async () => {
       if(remarks === ''){
-        toast.show('Please enter remarks', {
+        Toast.show({
           type: 'warning',
-          style: {width: '90%', alignSelf: 'center'},
-          duration: 1000
-          }
-        );
+          text1: 'Please enter remark',
+          visibilityTime: 1500,
+          position: 'top',
+        });
       }
       // console.log('Report submitted',remarks);
       const token =await fetchtoken();
       sendRemarks(token,schoolName?.id,schoolName?.user_id,remarks).then((res) => {
         console.log('res',res);
         if(res?.status === true){
-          toast.show('Report submitted successfully', {
+          Toast.show({
             type: 'success',
-            style: {width: '90%', alignSelf: 'center'},
-            duration: 1000
-            }
-          );
+            text1: 'Report submitted successfully',
+            visibilityTime: 1500,
+            position: 'top',
+          })
           navigation.goBack();
         }
       }).catch((err) => {
         console.log('err',err);
-        toast.show('Something went wrong', {
-          type: 'danger',
-          style: {width: '90%', alignSelf: 'center'},
-          duration: 1000
-          }
-        );
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong',
+          visibilityTime: 1500,
+          position: 'top',
+        })
       })
     }
 

@@ -24,6 +24,7 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ModalDropdown from 'react-native-modal-dropdown';
+import Toast from 'react-native-toast-message';
 
 const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -49,7 +50,13 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
         dispatch(setOrderData(response.data));
       }
     } catch (error) {
-      toast.show('Something went wrong.', {type: 'danger'});
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'Something went wrong',
+        visibilityTime: 1500,
+      })
       console.log('ORDER HISTORY::ERROR', error);
     }
   };
