@@ -5,13 +5,11 @@
  * @format
  */
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import AppNavigator from './src/Navigation/Index';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {Provider} from 'react-redux';
 import Store from './src/store/Store';
 import {fetchUser, fetchtoken} from './src/utils/fetchItem';
@@ -20,23 +18,24 @@ import {setUser} from './src/store/Features/UserSlice';
 import Toast from 'react-native-toast-message';
 import ToastConfig from './src/utils/toastConfig';
 
-(async () => {
-  try {
-    const token = await fetchtoken();
-    const user = await fetchUser();
-    if (token || user) {
-      const userData = await getProfile(token, user.id);
-      if (userData) {
-        setUser(userData);
-        // console.log('userData',userData);
-      }
-    }
-  } catch (error) {
-    console.log('error', error);
-  }
-})();
+// (async () => {
+//   try {
+//     const token = await fetchtoken();
+//     const user = await fetchUser();
+//     if (token || user) {
+//       const userData = await getProfile(token, user.id);
+//       if (userData) {
+//         setUser(userData);
+//         // console.log('userData',userData);
+//       }
+//     }
+//   } catch (error) {
+//     console.log('error', error);
+//   }
+// })();
 
 function App(): React.JSX.Element {
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <BottomSheetModalProvider>

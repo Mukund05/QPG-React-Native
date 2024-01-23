@@ -43,6 +43,7 @@ import SubmitReport from '../screen/drawerScreen/SubmitReport';
 import ViewSchool from '../screen/drawerScreen/manageSchool/ViewSchool';
 import EditSchool from '../screen/drawerScreen/manageSchool/EditSchool';
 import Toast from 'react-native-toast-message';
+import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 const Drawer = createDrawerNavigator();
 
@@ -200,9 +201,8 @@ const DrawerItemList: React.FC = () => {
       );
     } else {
       if (
-        item.label === 'Order Place' ||
-        item.label === 'Order History' ||
-        item.label === 'Add School'
+        item.label === 'Manage Order' ||
+        item.label === 'Manage School'
       ) {
         return null;
       } else {
@@ -325,25 +325,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userInfoSection: {
-    padding: 20,
+    padding: responsiveScreenHeight(1.4),
     backgroundColor: 'skyblue',
     borderBottomWidth: 1,
   },
   title: {
-    fontSize: 16,
-    marginTop: 3,
+    fontSize: responsiveFontSize(2),
+    marginTop: responsiveScreenHeight(0.4),
     fontWeight: 'bold',
   },
   caption: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(1.5),
     lineHeight: 14,
     color: '#6e6e6e',
     width: '100%',
-  },
-  row: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   section: {
     flexDirection: 'row',
@@ -351,25 +346,19 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     fontWeight: 'bold',
-    marginRight: 3,
+    marginRight: responsiveScreenWidth(4),
   },
   drawerSection: {
-    paddingTop: 15,
+    paddingTop: responsiveScreenHeight(1),
     height: '100%',
   },
   bottomDrawerSection: {
-    paddingBottom: 15,
+    paddingBottom: responsiveScreenHeight(1.3),
     borderTopColor: '#dedede',
     borderTopWidth: 1,
     borderBottomColor: '#dedede',
     borderBottomWidth: 1,
     backgroundColor: '#554994',
-  },
-  preference: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
   },
 });
 

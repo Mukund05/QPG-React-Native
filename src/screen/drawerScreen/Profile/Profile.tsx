@@ -107,7 +107,10 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
           : PERMISSIONS.IOS.PHOTO_LIBRARY;
 
       const permissionResult = await request(galleryPermission);
-
+      if(permissionResult === RESULTS.DENIED){
+        console.log('Gallery permission Rejected');
+        return ;
+      }
       const response = await ImagePicker.openPicker({
         width: 300,
         height: 400,

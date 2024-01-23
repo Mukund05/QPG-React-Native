@@ -11,6 +11,7 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {getClasses} from '../../../api/api';
 import {fetchtoken} from '../../../utils/fetchItem';
 import Header from '../../../utils/Header';
+import { responsiveFontSize, responsiveScreenHeight } from 'react-native-responsive-dimensions';
 
 const ClassesScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [classes, setClasses] = useState<
@@ -88,12 +89,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#A1EEBD',
     borderRadius: 5,
     width: '90%',
-    padding: 20,
-    margin: 10,
+    padding: responsiveScreenHeight(2),
+    margin: responsiveScreenHeight(1),
   },
   text: {
     color: 'black',
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.3),
     fontWeight: 'bold',
   },
   icon: {

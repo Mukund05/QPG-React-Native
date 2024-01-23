@@ -2,7 +2,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Header from '../../../utils/Header';
 import {ScrollView} from 'react-native';
-import {responsiveScreenHeight} from 'react-native-responsive-dimensions';
+import {responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth} from 'react-native-responsive-dimensions';
 
 const ViewHistory: React.FC<{navigation: any; route: any}> = ({
   navigation,
@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   header: {
-    marginVertical: 10,
-    fontSize: 20,
+    marginVertical: responsiveScreenHeight(1),
+    fontSize: responsiveFontSize(2.5),
     fontWeight: 'bold',
     color: 'green',
   },
@@ -118,8 +118,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     elevation: 5,
-    marginVertical: 10,
-    padding: 10,
+    marginVertical: responsiveScreenHeight(1),
+    padding: responsiveScreenHeight(0.5),
   },
   icon: {
     position: 'absolute',
@@ -130,39 +130,34 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   details: {
-    marginVertical: 20,
-    marginHorizontal: 10,
+    marginVertical: responsiveScreenHeight(2),
+    marginHorizontal: responsiveScreenWidth(2),
   },
   field: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 5,
+    marginVertical: responsiveScreenHeight(0.5),
   },
   label: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'grey',
     marginEnd: 12,
+    maxWidth: '40%',
   },
   value: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'green',
-    maxWidth: '70%',
-    marginEnd: 12,
+    maxWidth: '50%',
+    marginEnd: responsiveScreenWidth(2),
     textAlign: 'right',
+    flexWrap: 'wrap',
   },
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-  },
-  circleIcon: {
-    borderWidth: 1,
-    backgroundColor: '#1D5D9B',
-    borderRadius: 50,
-    padding: 1,
-    marginHorizontal: 15,
-  },
+  }
 });

@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import {getSubjects} from '../../../api/api';
 import {fetchtoken} from '../../../utils/fetchItem';
 import Header from '../../../utils/Header';
+import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 const SubjectsScreen: React.FC<{route: any; navigation: any}> = ({
   route,
@@ -102,32 +103,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'black',
-  },
   item: {
     backgroundColor: '#A1EEBD',
     borderRadius: 5,
-    padding: 20,
-    margin: 10,
+    padding: responsiveScreenHeight(2.2),
+    margin: responsiveScreenHeight(1),
     width: '90%',
   },
   text: {
     color: 'black',
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
-    marginLeft: 50,
-  },
-  headerStyle: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: 'grey',
-    marginVertical: 20,
+    marginLeft: responsiveScreenWidth(12),
   },
   icon: {
     position: 'absolute',

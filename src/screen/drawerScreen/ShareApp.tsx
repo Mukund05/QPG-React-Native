@@ -9,6 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Header from '../../utils/Header';
+import { responsiveFontSize, responsiveScreenHeight } from 'react-native-responsive-dimensions';
 
 interface shareOptions {
   title: string;
@@ -142,28 +143,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     height: '30%',
-    margin: 20,
+    margin: responsiveScreenHeight(1.5),
     borderRadius: 10,
   },
   header: {
-    fontSize: 30,
+    fontSize: responsiveFontSize(3.4),
     fontWeight: 'bold',
     textAlign: 'center',
-    margin: 20,
+    margin: responsiveScreenHeight(1),
     color: '#2483ff',
   },
   content: {
-    fontSize: 16,
-    margin: 20,
+    fontSize: responsiveFontSize(2),
+    margin: responsiveScreenHeight(1.8),
     color: 'black',
+    letterSpacing:0.4,
+    lineHeight: 22,
   },
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
   icon: {
-    marginBottom: 10,
-    margin: 18,
+    marginBottom: responsiveScreenHeight(1.5),
+    margin: responsiveScreenHeight(1.8),
   },
 });
 

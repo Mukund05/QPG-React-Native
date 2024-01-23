@@ -14,17 +14,24 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getProfile, loginUser} from '../../api/api.ts';
 import {fetchUser, fetchtoken} from '../../utils/fetchItem.tsx';
-import {useToast} from 'react-native-toast-notifications';
 import ForgetPasswordModal from './ForgetPassword';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../../store/Features/UserSlice.tsx';
 import Toast from 'react-native-toast-message';
-import { responsiveFontSize, responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from 'react-native-responsive-dimensions';
+import SplashScreen from 'react-native-splash-screen';
+
+// Interface for RememberMeCheckboxProps
 interface RememberMeCheckboxProps {
   checked: boolean;
   onPress: () => void;
 }
 
+// RememberMeCheckbox Component
 const RememberMeCheckbox: React.FC<RememberMeCheckboxProps> = ({
   checked,
   onPress,
@@ -39,12 +46,14 @@ const RememberMeCheckbox: React.FC<RememberMeCheckboxProps> = ({
   </TouchableOpacity>
 );
 
+// LoadingIndicator Component
 const LoadingIndicator: React.FC = () => (
   <View style={styles.loader}>
     <ActivityIndicator size="large" color="#0000ff" />
   </View>
 );
 
+// Interface for LoginFormProps
 interface LoginFormProps {
   email: string;
   setEmail: (text: string) => void;
@@ -54,6 +63,7 @@ interface LoginFormProps {
   handleTogglePasswordVisibility: () => void;
 }
 
+// LoginForm Component
 const LoginForm: React.FC<LoginFormProps> = ({
   email,
   setEmail,
@@ -97,29 +107,31 @@ const LoginForm: React.FC<LoginFormProps> = ({
   </>
 );
 
+// LoginScreen Component
 const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-
-  // const Toast = useToast();
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   useEffect(() => {
-    //every time user restart the app we autheticate the user and token
+    setTimeout(()=>{
+      SplashScreen.hide();
+    },1100)
+
+    //Validate past login details and if valid then navigate to dashboard
     const checkUserCredentials = async () => {
       try {
         const token = await fetchtoken();
         const user = await fetchUser();
 
         if (user && token) {
-          //if you have token and user in storage, still check user is valid or not
           try {
             const {id} = user as {id: number};
             const response = await getProfile(token, id);
@@ -130,8 +142,8 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
               routes: [{name: 'DashBoard'}],
             });
           } catch (error) {
-            Alert.alert('Error', 'Invalid user credentials');
-
+            Alert.alert('Session Expire', 'User Login Session Expired. Please Relogin!');
+            
             await AsyncStorage.removeItem('user');
             await AsyncStorage.removeItem('token');
             navigation.reset({
@@ -147,6 +159,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
       }
     };
 
+    //Retrieve stored user credentials and set them in state
     const retrieveStoredValues = async () => {
       try {
         const storedData = await fetchUser();
@@ -170,6 +183,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
     retrieveStoredValues();
   }, []);
 
+  //handle the login credentials by validating them and storing them , if valid navigate to dashboard
   const handleLogin = async () => {
     if (email.trim() === '' || password.trim() === '') {
       Toast.show({
@@ -203,7 +217,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
           text1: 'Login Successful',
           visibilityTime: 1500,
           position: 'top',
-        })
+        });
 
         navigation.reset({
           index: 0,
@@ -227,7 +241,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
         text2: 'Please check your email and password',
         visibilityTime: 1500,
         position: 'top',
-      })
+      });
     }
   };
 
@@ -258,11 +272,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('SignupScreen');

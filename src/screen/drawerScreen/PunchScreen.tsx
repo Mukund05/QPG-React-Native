@@ -15,6 +15,7 @@ import {background_permission, requestPermission} from '../../utils/Permission';
 import Geolocation from 'react-native-geolocation-service';
 import {fetchUser, fetchtoken} from '../../utils/fetchItem';
 import {mapUpdate} from '../../api/api';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 interface PunchScreenProps {
   navigation: any; // Replace with the actual type if possible
@@ -364,7 +365,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title: {
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.5),
     textAlign: 'center',
     marginVertical: 10,
     color: 'black',
@@ -385,7 +386,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'green', // Change to your desired color
   },
   buttonTitle: {
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.5),
     textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',

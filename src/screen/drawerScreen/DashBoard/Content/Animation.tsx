@@ -2,6 +2,7 @@ import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import React from 'react';
 import VideoPlayer from './VidPdfLogix.tsx/VideoPlayer';
 import Header from '../../../../utils/Header';
+import { responsiveFontSize, responsiveScreenHeight } from 'react-native-responsive-dimensions';
 
 const Animation: React.FC<{navigation: any; route: any}> = ({
   navigation,
@@ -41,13 +42,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0', // Change background color to a light gray
-    // paddingHorizontal:7, // Add padding for a better layout
   },
   videoplayer: {
     backgroundColor: 'transparent', // Change background color to white
     width: '100%',
     height: '100%',
-    marginVertical: 5,
+    marginVertical: responsiveScreenHeight(1),
     justifyContent: 'center',
     alignContent: 'center',
     borderRadius: 10, // Add border radius for a rounded appearance
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 20,
+    fontSize: responsiveFontSize(2.5),
+    marginTop: responsiveScreenHeight(40),
   },
 });

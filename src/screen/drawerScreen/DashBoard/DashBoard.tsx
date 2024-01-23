@@ -9,10 +9,16 @@ import React, { useEffect, useState } from 'react';
 import Header from '../../../utils/Header';
 import { fetchUser } from '../../../utils/fetchItem';
 import Icon from "react-native-vector-icons/MaterialIcons"
+import { responsiveFontSize, responsiveScreenHeight } from 'react-native-responsive-dimensions';
+import SplashScreen from 'react-native-splash-screen';
 
 const DashBoard: React.FC<{navigation: any}> = ({navigation}) => {
   const [rol, setRole] = useState<Number | null>(0);
   useEffect(()=>{
+
+    setTimeout(()=>{
+      SplashScreen.hide();
+    },1100)
 
     const fetchId = async () =>{
       const {role} = await fetchUser()
@@ -72,22 +78,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: '10%',
+    marginTop: '8%',
   },
   text: {
     color: 'grey',
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.5),
     fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#A1EEBD',
     borderRadius: 5,
-    padding: 20,
+    padding: responsiveScreenHeight(2),
     borderColor: 'black',
     borderWidth: 1,
     width: '80%',
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: responsiveScreenHeight(1),
   },
 });
 

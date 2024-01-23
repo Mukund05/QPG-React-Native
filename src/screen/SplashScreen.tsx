@@ -14,7 +14,7 @@ const SplashScreenComponent: React.FC<{navigation: any}> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require('../assets/images/logo_circle.png')} />
+      {/* <Image style={styles.logo} source={require('../assets/images/logo_circle.png')} /> */}
     </View>
   );
 

@@ -20,12 +20,15 @@ import {
   getPrice,
   getSubjects,
 } from '../../../api/api';
-import {responsiveFontSize, responsiveHeight} from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
 import {useDispatch} from 'react-redux';
 import {addOrder} from '../../../store/Features/OrderSlice';
 import {useToast} from 'react-native-toast-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import Toast from 'react-native-toast-message';
 
 const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
@@ -50,7 +53,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
 
   const handleReset = () => {
     // Increment the resetKey to trigger a re-render with initial state
-    setResetKey((prevKey) => prevKey + 1);
+    setResetKey(prevKey => prevKey + 1);
   };
 
   const dispatch = useDispatch();
@@ -116,25 +119,24 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
 
     fetchSchools();
     fetchClasses();
-    if(classID) fetchSubjects();
-    if(classID && subjectId) fetchPrice();
+    if (classID) fetchSubjects();
+    if (classID && subjectId) fetchPrice();
   }, []);
 
   // Fetch Subjects when className changes
   useEffect(() => {
     // console.log('classID:', classID);
     // console.log('subjectId:', subjectId)
-  
+
     if (classID) fetchSubjects();
   }, [classID]);
 
   // Fetch Price when subject changes
   useEffect(() => {
-    
     // console.log('classID:', classID,'subjectId:', subjectId);
     if (classID) fetchSubjects();
     if (classID && subjectId) fetchPrice();
-  }, [classID, subjectId,triggerEffect]);
+  }, [classID, subjectId, triggerEffect]);
 
   // Calculate total amount when quantity or discount changes and set the result to the total state
   useEffect(() => {
@@ -155,7 +157,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     setPrice('');
     setQuantity('1');
     setTotal('');
-    setTriggerEffect((prevValue) => !prevValue);
+    setTriggerEffect(prevValue => !prevValue);
   }, [resetKey]);
 
   const ViewBook = () => {
@@ -168,13 +170,13 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
       return;
     }
 
-    //add validation on school name, class name and subject
+    // Add validation on school name, class name, and subject
     if (schoolName === '' || className === '' || subject === '') {
-      Alert.alert('Please Enter Required Filed');
+      Alert.alert('Please Enter Required Field');
       return;
     }
 
-    //add validation on discount
+    // Add validation on discount
     if (Number(discount) > 100 || Number(discount) < 0) {
       Alert.alert('Please Enter Valid Discount');
       return;
@@ -183,16 +185,35 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     const data = createData();
 
     // Retrieve existing data from AsyncStorage based on the user ID
-    const {id} = await fetchUser(); // You need to implement a function to get the user ID
+    const {id} = await fetchUser();
 
     try {
       const existingData = await AsyncStorage.getItem(id.toString());
       let newData = [];
+
       if (existingData) {
-        // If there is existing data, parse it and append the new data
+        // If there is existing data, parse it and update or append the new data
         newData = JSON.parse(existingData);
+
+        const existingItemIndex = newData.findIndex(
+          (item: any) =>
+            item.SchoolItem.label === schoolName &&
+            item.ClassItem.label === className &&
+            item.SubjecItem.label === subject,
+        );
+
+        if (existingItemIndex !== -1) {
+          // If the item already exists, update its quantity and discount
+          newData[existingItemIndex].quantity += data.quantity;
+          newData[existingItemIndex].discount = data.discount;
+        } else {
+          // If the item does not exist, add it to the array
+          newData.push(data);
+        }
+      } else {
+        // If there is no existing data, add the new data to the array
+        newData.push(data);
       }
-      newData.push(data);
 
       // Save the updated data to AsyncStorage
       await AsyncStorage.setItem(id.toString(), JSON.stringify(newData));
@@ -203,11 +224,11 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
         type: 'error',
         text1: 'Error saving data to AsyncStorage:',
         visibilityTime: 1500,
-        position:'top',
-      })
+        position: 'top',
+      });
     }
 
-    dispatch(addOrder(data)); //dispatch the data inside orderSlice
+    dispatch(addOrder(data)); // Dispatch the data inside orderSlice
     // console.log(data);
 
     handleReset(); // Reset all states
@@ -216,14 +237,14 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
       type: 'success',
       text1: 'Book Added Successfully',
       visibilityTime: 1500,
-      position:'top',
-    })
-    navigation.navigate("Order Page")
+      position: 'top',
+    });
+    navigation.navigate('Order Page');
   };
 
   const createData = () => {
     const data: any = {};
-    data['id']=uuidv4();
+    data['id'] = uuidv4();
     data['SchoolItem'] = {
       label: schoolName,
       value: school.filter((item: any) => item.name === schoolName)[0].id,
@@ -391,7 +412,9 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
               />
             </View>
             {/* add school list using react native raw bottom sheet */}
-            <TouchableOpacity disabled={className===''} onPress={() => subjectSheetRef.current?.open()}>
+            <TouchableOpacity
+              disabled={className === ''}
+              onPress={() => subjectSheetRef.current?.open()}>
               <TextInput
                 placeholder="Select Subject"
                 placeholderTextColor="grey"
@@ -477,7 +500,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                   </View>
                   <View style={styles.tableCell}>
                     <Text style={styles.tableCellText}>
-                    ₹ {price ? price?.mrp : 'No Price'}
+                      ₹ {price ? price?.mrp : 'No Price'}
                     </Text>
                   </View>
                 </View>

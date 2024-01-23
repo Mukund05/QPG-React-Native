@@ -2,7 +2,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {responsiveScreenHeight} from 'react-native-responsive-dimensions';
+import {responsiveFontSize, responsiveScreenHeight} from 'react-native-responsive-dimensions';
 
 const VideoPlayer: React.FC<{
   videos: {
@@ -82,20 +82,20 @@ const VideoPlayer: React.FC<{
 const styles = StyleSheet.create({
   container: {
     width: '90%',
-    marginTop: 10,
+    marginTop: responsiveScreenHeight(2),
     display: 'flex',
     flexDirection: 'column',
     gap: 10,
     borderRadius: 15,
     backgroundColor: 'transparent',
-    marginBottom: 50,
+    marginBottom: responsiveScreenHeight(4),
     marginHorizontal: '5%',
   },
   videoContainer: {
     overflow: 'hidden',
     position: 'relative',
     width: '100%',
-    height: 240,
+    height: responsiveScreenHeight(27),
     backgroundColor: 'white',
     borderRadius: 15,
     shadowRadius: 2,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     pointerEvents: 'none', // Disable touch events on the video player
   },
   videoTitle: {
-    fontSize: 17,
+    fontSize: responsiveFontSize(2.2),
     color: 'black',
     fontWeight: '600',
     alignSelf: 'center',
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     // borderBottomColor: 'grey',
     width: '100%',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: responsiveScreenHeight(0.5),
   },
 });
 

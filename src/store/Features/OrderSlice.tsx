@@ -13,13 +13,13 @@ const orderSlice = createSlice({
       const newItem = action.payload;
 
       // Check if the item with the same properties already exists
-      const existingItem = state.order.find(
+      const existingItem = state?.order?.find(
         (item: any) =>
           item.SchoolItem.label === newItem.SchoolItem.label &&
           item.ClassItem.label === newItem.ClassItem.label &&
           item.SubjecItem.label === newItem.SubjecItem.label,
       );
-
+        // console.log(existingItem)
       if (existingItem) {
         // If the item already exists, update its quantity
         existingItem.quantity += newItem.quantity;
