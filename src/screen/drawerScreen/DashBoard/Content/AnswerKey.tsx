@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: responsiveFontSize(2.5),
-    marginTop: responsiveScreenHeight(5),
+    marginTop: responsiveScreenHeight(40),
   },
   pdfContainer: {
     backgroundColor: 'transparent',

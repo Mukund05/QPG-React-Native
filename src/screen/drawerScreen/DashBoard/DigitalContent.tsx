@@ -18,8 +18,9 @@ const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
   route,
   navigation,
 }) => {
-  const {classId, SubjectID} = route.params;
+  const {classId, SubjectID,className,subjectName} = route.params;
 
+  // console.log(classId,SubjectID)
   const [video, setVideo] = useState<any>([]);
   const [ebook, setEbook] = useState<any>([]);
   const [answerKey, setAnswerKey] = useState<any>([]);
@@ -70,7 +71,7 @@ const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
   return (
     <>
       <Header
-        title="Digital Content"
+        title={`${subjectName}`}
         leftIcon="arrow-back"
         onPressLeftIcon={() => navigation.goBack()}
         bgColor="blue"

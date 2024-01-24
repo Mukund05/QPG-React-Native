@@ -24,13 +24,24 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
     },[])
 
     const handlesubmitReport =async () => {
-      if(remarks === ''){
+      if(schoolName.length === 0){
         Toast.show({
-          type: 'warning',
-          text1: 'Please enter remark',
+          type: 'error',
+          text1: 'Please select school',
           visibilityTime: 1500,
           position: 'top',
         });
+        return;
+      }
+
+      if(remarks === ''){
+        Toast.show({
+          type: 'warning',
+          text1: 'Remark cannot be Empty!',
+          visibilityTime: 1500,
+          position: 'top',
+        });
+        return;
       }
       // console.log('Report submitted',remarks);
       const token =await fetchtoken();

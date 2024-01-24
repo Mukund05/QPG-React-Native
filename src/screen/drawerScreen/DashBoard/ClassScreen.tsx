@@ -36,8 +36,8 @@ const ClassesScreen: React.FC<{navigation: any}> = ({navigation}) => {
     fetchClass();
   }, []);
 
-  const handleClassPress = (classId: string) => {
-    navigation.navigate('Subjects', {classId});
+  const handleClassPress = (classId: string,className:string) => {
+    navigation.navigate('Subjects', {classId,className});
   };
 
   // if (loader) {
@@ -62,7 +62,7 @@ const ClassesScreen: React.FC<{navigation: any}> = ({navigation}) => {
             <TouchableOpacity
               key={item.ClassID}
               style={styles.item}
-              onPress={() => handleClassPress(item.ClassID)}>
+              onPress={() => handleClassPress(item.ClassID,item.ClassName)}>
               <FontAwesome5Icon
                 style={styles.icon}
                 name="book"

@@ -19,7 +19,7 @@ const SubjectsScreen: React.FC<{route: any; navigation: any}> = ({
   route,
   navigation,
 }) => {
-  const {classId} = route.params; // Class name from previous screen (ClassesScreen)
+  const {classId,className} = route.params; // Class name from previous screen (ClassesScreen)
 
   // const [loader, setLoader] = React.useState<boolean>(false);
   const [subject, setSubject] = React.useState<
@@ -52,9 +52,9 @@ const SubjectsScreen: React.FC<{route: any; navigation: any}> = ({
     fetchSubject();
   }, []);
 
-  const handleSubjectPress = (SubjectID: Number) => {
+  const handleSubjectPress = (SubjectID: Number,subjectName:string) => {
     // console.log('Subject Screen', SubjectID);
-    navigation.navigate('Digital Content', {classId, SubjectID});
+    navigation.navigate('Digital Content', {classId, SubjectID,className,subjectName});
   };
 
   // if (loader) {
@@ -81,7 +81,7 @@ const SubjectsScreen: React.FC<{route: any; navigation: any}> = ({
             <TouchableOpacity
               key={item.SubjectID}
               style={styles.item}
-              onPress={() => handleSubjectPress(item.SubjectID)}>
+              onPress={() => handleSubjectPress(item.SubjectID,item.SubjectName)}>
               <Icon
                 name="open-book"
                 style={styles.icon}

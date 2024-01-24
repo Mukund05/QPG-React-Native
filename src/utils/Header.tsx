@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
           onPress={onPressLeftIcon}
         />
 
-        <Text style={[styles.headerTitle, {color: headerTitleColor?headerTitleColor:'white'}]}>
+        <Text style={[styles.headerTitle, {color: headerTitleColor?headerTitleColor:'white'}]} numberOfLines={1} ellipsizeMode='tail'>
           {title}
         </Text>
 
@@ -75,6 +75,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: responsiveFontSize(2.5),
     fontWeight: 'bold',
+    maxWidth: '60%'
+    
   },
 });
 

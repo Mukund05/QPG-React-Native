@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
     borderRadius: responsiveScreenHeight(1),
     // shadowRadius: 2,
     // shadowOffset: {
-      // width: 0,
-      // height: -3,
+    //   width: 0,
+    //   height: -3,
     // },
     // shadowColor: '#000000',
     // elevation: 5,
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     marginTop: responsiveHeight(1),
+    maxWidth: '90%'
   },
   desc: {
     fontSize: responsiveFontSize(1.2),

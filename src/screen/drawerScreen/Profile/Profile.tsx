@@ -206,6 +206,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
             onChangeText={setEmail}
             placeholder="Email"
             placeholderTextColor="black"
+            editable={false}
           />
           <TextInput
             style={styles.input}

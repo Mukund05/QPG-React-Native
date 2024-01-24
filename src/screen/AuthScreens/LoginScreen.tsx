@@ -128,6 +128,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
     //Validate past login details and if valid then navigate to dashboard
     const checkUserCredentials = async () => {
       try {
+        setLoading(true)
         const token = await fetchtoken();
         const user = await fetchUser();
 
@@ -150,6 +151,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
               index: 0,
               routes: [{name: 'LoginScreen'}],
             });
+            setLoading(false)
           }
         }
       } catch (error) {
@@ -196,6 +198,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
     }
 
     try {
+      setLoading(true);
       const response = await loginUser({email, password});
 
       if (response.status === 200) {
@@ -223,7 +226,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
           index: 0,
           routes: [{name: 'DashBoard'}],
         });
-
+        setLoading(false);
         const userData = await getProfile(
           response?.data?.data?.token,
           response?.data?.data?.user?.id,
@@ -235,6 +238,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
         setRememberMe(false);
       }
     } catch (error) {
+      setLoading(false);
       Toast.show({
         type: 'error',
         text1: 'Invalid Credentials',
