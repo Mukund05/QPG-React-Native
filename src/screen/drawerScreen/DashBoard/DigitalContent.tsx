@@ -13,6 +13,7 @@ import {getEbooks, getPdfs, getVideos} from '../../../api/api';
 import {fetchUser, fetchtoken} from '../../../utils/fetchItem';
 import Header from '../../../utils/Header';
 import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import Toast from 'react-native-toast-message';
 
 const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
   route,
@@ -25,7 +26,7 @@ const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
   const [ebook, setEbook] = useState<any>([]);
   const [answerKey, setAnswerKey] = useState<any>([]);
   const [userrole, setUserRole] = useState<any>(3);
-
+  const [clicked,setClicked] = useState<boolean>(false)
   useEffect(() => {
     const fetchVideo = async () => {
       try {
@@ -68,6 +69,23 @@ const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
     fetchPdf();
   }, []);
 
+  const handlePress =async (screen:any,data:any) => {
+    console.log(data)
+    if(data===undefined || data.length===0){
+      setClicked(true)
+      Toast.show({
+        type:'success',
+        text1: `No ${screen} Found!`,
+        visibilityTime: 1500,
+        position: 'top'
+      })
+    }else{
+      setClicked(false);
+      // console.log('Data:',data)
+      navigation.navigate(screen, {data})
+    }
+  } 
+
   return (
     <>
       <Header
@@ -81,13 +99,13 @@ const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
       <ScrollView>
         <View style={styles.container}>
           <TouchableOpacity
-            style={styles.item}
-            onPress={() => navigation.navigate('Animations', {video})}>
+            style={[styles.item,{backgroundColor:'#A1EEBD'}]}
+            onPress={()=>handlePress('Animations',video)}>
             <Image
               style={styles.image}
               source={require('../../../assets/images/animated_videos.png')}
             />
-            <Text style={styles.text}>Animation</Text>
+            <Text style={[styles.text,{color:'black'}]}>Animation</Text>
             <Image
               style={styles.rightIcon}
               source={require('../../../assets/images/Back.png')}
@@ -98,7 +116,7 @@ const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
             <>
               <TouchableOpacity
                 style={styles.item}
-                onPress={() => navigation.navigate('E-Books', {ebook})}>
+                onPress={() => handlePress('E-Books', ebook)}>
                 <Image
                   style={styles.image}
                   source={require('../../../assets/images/e_book.png')}
@@ -112,7 +130,7 @@ const DigitalContentScreen: React.FC<{route: any; navigation: any}> = ({
 
               <TouchableOpacity
                 style={styles.item}
-                onPress={() => navigation.navigate('Answer Key', {answerKey})}>
+                onPress={() => handlePress('Answer Key', answerKey)}>
                 <Image
                   style={styles.image}
                   source={require('../../../assets/images/test_paper.png')}

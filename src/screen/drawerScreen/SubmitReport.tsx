@@ -1,73 +1,82 @@
-import {View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
-import React, { useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 import Header from '../../utils/Header';
-import { getAllSchools, sendRemarks } from '../../api/api';
-import { fetchtoken } from '../../utils/fetchItem';
+import {getAllSchools, sendRemarks} from '../../api/api';
+import {fetchtoken} from '../../utils/fetchItem';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { useToast } from 'react-native-toast-notifications';
+import {useToast} from 'react-native-toast-notifications';
 import Toast from 'react-native-toast-message';
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import {responsiveFontSize} from 'react-native-responsive-dimensions';
 
 const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
-    const [school,setSchool] = React.useState<any>([]);
-    const [schoolName,setSchoolName] = React.useState<any>([]);
-    const [remarks,setRemarks] = React.useState<any>('');
-    const toast = useToast()
-    const fetchSchool = async () => {
-      const token = await fetchtoken();
-      const data = await getAllSchools(token);
-      setSchool(data?.data);
+  const [school, setSchool] = React.useState<any>([]);
+  const [schoolName, setSchoolName] = React.useState<any>([]);
+  const [remarks, setRemarks] = React.useState<any>('');
+  const toast = useToast();
+  const fetchSchool = async () => {
+    const token = await fetchtoken();
+    const data = await getAllSchools(token);
+    setSchool(data?.data);
+  };
+
+  useEffect(() => {
+    fetchSchool();
+  }, []);
+
+  const handlesubmitReport = async () => {
+    if (schoolName.length === 0) {
+      Toast.show({
+        type: 'error',
+        text1: 'Please select school',
+        visibilityTime: 1500,
+        position: 'top',
+      });
+      return;
     }
 
-    useEffect(()=>{
-      fetchSchool();
-    },[])
-
-    const handlesubmitReport =async () => {
-      if(schoolName.length === 0){
-        Toast.show({
-          type: 'error',
-          text1: 'Please select school',
-          visibilityTime: 1500,
-          position: 'top',
-        });
-        return;
-      }
-
-      if(remarks === ''){
-        Toast.show({
-          type: 'warning',
-          text1: 'Remark cannot be Empty!',
-          visibilityTime: 1500,
-          position: 'top',
-        });
-        return;
-      }
-      // console.log('Report submitted',remarks);
-      const token =await fetchtoken();
-      sendRemarks(token,schoolName?.id,schoolName?.user_id,remarks).then((res) => {
-        console.log('res',res);
-        if(res?.status === true){
+    if (remarks === '') {
+      Toast.show({
+        type: 'warning',
+        text1: 'Remark cannot be Empty!',
+        visibilityTime: 1500,
+        position: 'top',
+      });
+      return;
+    }
+    // console.log('Report submitted',remarks);
+    const token = await fetchtoken();
+    sendRemarks(token, schoolName?.id, schoolName?.user_id, remarks)
+      .then(res => {
+        console.log('res', res);
+        if (res?.status === true) {
           Toast.show({
             type: 'success',
             text1: 'Report submitted successfully',
             visibilityTime: 1500,
             position: 'top',
-          })
+          });
           navigation.goBack();
         }
-      }).catch((err) => {
-        console.log('err',err);
+      })
+      .catch(err => {
+        console.log('err', err);
         Toast.show({
           type: 'error',
           text1: 'Something went wrong',
           visibilityTime: 1500,
           position: 'top',
-        })
-      })
-    }
+        });
+      });
+  };
 
-    const schoolSheetRef: any = useRef();
+  const schoolSheetRef: any = useRef();
 
   return (
     <>
@@ -75,9 +84,9 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
         title="Submit Report"
         leftIcon="arrow-back"
         onPressLeftIcon={() => navigation.goBack()}
-        bgColor='blue'
+        bgColor="blue"
       />
-       <ScrollView keyboardShouldPersistTaps="handled">
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.screenContainer}>
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
@@ -89,7 +98,7 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
                 placeholder="Select School"
                 placeholderTextColor="grey"
                 style={styles.input}
-                value={schoolName?.name ?? "Select School"}
+                value={schoolName?.name ?? 'Select School'}
                 editable={false}
               />
             </TouchableOpacity>
@@ -106,11 +115,11 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
                   borderBottomColor: 'black',
                   borderTopWidth: 2,
                 },
-              }}>              
+              }}>
               <ScrollView>
                 {school.map((schoolItem: any) => (
                   <TouchableOpacity
-                  key={schoolItem?.id}
+                    key={schoolItem?.id}
                     onPress={() => {
                       setSchoolName(schoolItem);
                       schoolSheetRef.current?.close();
@@ -126,7 +135,9 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
             <Text style={styles.label}>Strength</Text>
             <TextInput
               style={styles.input}
-              value={schoolName?.strength ?`${schoolName?.strength}` : "Strength"}
+              value={
+                schoolName?.strength ? `${schoolName?.strength}` : 'Strength'
+              }
               placeholder="Strength"
               placeholderTextColor="grey"
               keyboardType="numeric"
@@ -134,23 +145,53 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
             />
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>School Code</Text>
             <TextInput
               style={styles.input}
-              value={schoolName?.email ? `${schoolName?.email}` : "Email ID"}
-              onChangeText={()=>{}}
-              placeholder="Enter Email ID"
+              value={
+                schoolName?.code ? `${schoolName?.code}` : 'School Code'
+              }
+              placeholder="Enter School Code"
+              placeholderTextColor="grey"
+              keyboardType="numeric"
+              editable={false}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Contact Person</Text>
+            <TextInput
+              style={styles.input}
+              value={
+                schoolName?.person
+                  ? `${schoolName?.person}`
+                  : 'Contact Person Name'
+              }
+              onChangeText={() => {}}
+              placeholder="Contact Person Name"
+              placeholderTextColor="grey"
+              editable={false}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Contact Person Designation</Text>
+            <TextInput
+              style={styles.input}
+              value={schoolName?.designation ? `${schoolName?.designation}` : 'designation'}
+              onChangeText={() => {}}
+              placeholder="Enter Person Desginations"
               placeholderTextColor="grey"
               editable={false}
             />
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Contact Person</Text>
+            <Text style={styles.label}>Email</Text>
             <TextInput
               style={styles.input}
-              value={schoolName?.person ? `${schoolName?.person}` : "Contact Person Name"}
-              onChangeText={()=>{}}
-              placeholder="Contact Person Name"
+              value={schoolName?.email ? `${schoolName?.email}` : 'Email ID'}
+              onChangeText={() => {}}
+              placeholder="Enter Email ID"
               placeholderTextColor="grey"
               editable={false}
             />
@@ -159,8 +200,12 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
             <Text style={styles.label}>Contact No</Text>
             <TextInput
               style={styles.input}
-              value={schoolName?.contact_no ? `${schoolName?.contact_no}` : "Contact No."}
-              onChangeText={()=>{}}
+              value={
+                schoolName?.contact_no
+                  ? `${schoolName?.contact_no}`
+                  : 'Contact No.'
+              }
+              onChangeText={() => {}}
               placeholder="Contact No."
               placeholderTextColor="grey"
               editable={false}
@@ -168,11 +213,23 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
             />
           </View>
           <View style={styles.inputContainer}>
+            <Text style={styles.label}>Address</Text>
+            <TextInput
+              style={styles.input}
+              value={schoolName?.address ? `${schoolName?.address}` : 'Address'}
+              onChangeText={() => {}}
+              placeholder="Enter your Address"
+              placeholderTextColor="grey"
+              editable={false}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
             <Text style={styles.label}>City</Text>
             <TextInput
               style={styles.input}
-              value={schoolName?.city ? `${schoolName?.city}` : "City"}
-              onChangeText={()=>{}}
+              value={schoolName?.city ? `${schoolName?.city}` : 'City'}
+              onChangeText={() => {}}
               placeholder="City"
               placeholderTextColor="grey"
               editable={false}
@@ -182,19 +239,31 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
             <Text style={styles.label}>State</Text>
             <TextInput
               style={styles.input}
-              value={schoolName?.state ? `${schoolName?.state}` : "State"}
-              onChangeText={()=>{}}
+              value={schoolName?.state ? `${schoolName?.state}` : 'State'}
+              onChangeText={() => {}}
               placeholder="Enter State"
               placeholderTextColor="grey"
               editable={false}
             />
           </View>
           <View style={styles.inputContainer}>
+            <Text style={styles.label}>Postal Code</Text>
+            <TextInput
+              style={styles.input}
+              value={schoolName?.pincode ? `${schoolName?.pincode}` : 'Pincode'}
+              onChangeText={() => {}}
+              placeholder="Enter Postal Code"
+              placeholderTextColor="grey"
+              editable={false}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
             <Text style={styles.label}>Country</Text>
             <TextInput
               style={styles.input}
-              value={schoolName?.country? `${schoolName?.country}` : "Country"}
-              onChangeText={()=>{}}
+              value={schoolName?.country ? `${schoolName?.country}` : 'Country'}
+              onChangeText={() => {}}
               placeholder="Enter Country"
               placeholderTextColor="grey"
               editable={false}
@@ -206,10 +275,10 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
             <TextInput
               style={[styles.input, styles.textArea]}
               value={remarks}
-              onChangeText={(text) => setRemarks(text)}
-              placeholder={"Enter Remark"}
+              onChangeText={text => setRemarks(text)}
+              placeholder={'Enter Remark'}
               placeholderTextColor="grey"
-              keyboardType='default'
+              keyboardType="default"
               multiline
               numberOfLines={4}
             />
@@ -217,13 +286,11 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
         </View>
       </ScrollView>
       <View style={styles.bottomViewContainer}>
-
         <TouchableOpacity style={styles.button} onPress={handlesubmitReport}>
-          <View >
+          <View>
             <Text style={styles.buttonText}>Submit Report</Text>
           </View>
         </TouchableOpacity>
-
       </View>
     </>
   );
@@ -232,77 +299,77 @@ const SubmitReport: React.FC<{navigation: any}> = ({navigation}) => {
 export default SubmitReport;
 
 const styles = StyleSheet.create({
-    screenContainer: {
-      flex: 1,
-      padding: 20,
-      backgroundColor: '#fff',
-    },
-    inputContainer: {
-      width: '100%',
-      marginBottom: 20,
-    },
-    label: {
-      fontSize: responsiveFontSize(2),
-      marginBottom: 10,
-      color: 'grey',
-      fontWeight: '700',
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: '#000',
-      borderRadius: 10,
-      fontSize: responsiveFontSize(2),
-      padding: 10,
-      color: '#000',
-    },
-    bottomViewContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: 10,
-      backgroundColor: 'white',
-      paddingVertical: 20,
-    },
-    button: {
-      marginHorizontal: 10,
-      backgroundColor: '#000',
-      padding: 10,
-      borderRadius: 5,
-      paddingHorizontal: 25,
-      width:'90%'
-    },
-    buttonText: {
-      color: '#fff',
-      fontSize: responsiveFontSize(2.5),
-      fontWeight: 'bold',
-      textAlign:'center',
-      letterSpacing:2,
-      textTransform:'uppercase'
-    },
-    labelContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    filed: {
-      color: 'white',
-      fontSize: responsiveFontSize(2.4),
-      fontWeight: 'bold',
-      textTransform: 'capitalize',
-      textAlign: 'center',
-    },
-    bottomContainer: {
-      padding: 10,
-      backgroundColor: '#1D5D9B',
-      marginVertical: 5,
-      width: '90%',
-      alignSelf: 'center',
-      borderRadius: 10,
-    },
-    textArea: {
-      textAlignVertical: 'top',  // This ensures the text starts from the top
-      paddingTop: 10,  // Adjust the padding as needed
-      height: 100,  // Set an initial height
-      // Additional styles for the text area if needed
-    }
-  });
+  screenContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: responsiveFontSize(2),
+    marginBottom: 10,
+    color: 'grey',
+    fontWeight: '700',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 10,
+    fontSize: responsiveFontSize(2),
+    padding: 10,
+    color: '#000',
+  },
+  bottomViewContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
+    paddingVertical: 20,
+  },
+  button: {
+    marginHorizontal: 10,
+    backgroundColor: '#000',
+    padding: 10,
+    borderRadius: 5,
+    paddingHorizontal: 25,
+    width: '90%',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: responsiveFontSize(2.5),
+    fontWeight: 'bold',
+    textAlign: 'center',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  filed: {
+    color: 'white',
+    fontSize: responsiveFontSize(2.4),
+    fontWeight: 'bold',
+    textTransform: 'capitalize',
+    textAlign: 'center',
+  },
+  bottomContainer: {
+    padding: 10,
+    backgroundColor: '#1D5D9B',
+    marginVertical: 5,
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 10,
+  },
+  textArea: {
+    textAlignVertical: 'top', // This ensures the text starts from the top
+    paddingTop: 10, // Adjust the padding as needed
+    height: 100, // Set an initial height
+    // Additional styles for the text area if needed
+  },
+});

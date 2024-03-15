@@ -8,8 +8,8 @@ const AnswerKey: React.FC<{route: any; navigation: any}> = ({
   route,
   navigation,
 }) => {
-  const {answerKey}:any = route.params;
-  // console.log(answerKey);
+  const {data}:any = route.params;
+  console.log(data);
 
   const {className, subjectName} = route.params;
   //instead of className and subjectName, we need to take the pdfs from the api and display them here
@@ -24,9 +24,9 @@ const AnswerKey: React.FC<{route: any; navigation: any}> = ({
         onPressRightIcon={() => navigation.navigate('Dashboard')}
       />
     <ScrollView style={styles.container}>
-      {answerKey.length > 0 ? (
+      {data ? (
         <View style={styles.pdfContainer}>
-          <PDFViewer pdfs={answerKey} navigation={navigation} screen={'pdf'} />
+          <PDFViewer pdfs={data} navigation={navigation} screen={'pdf'} />
         </View>
       ) : (
         <View>

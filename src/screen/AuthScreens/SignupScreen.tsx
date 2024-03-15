@@ -26,6 +26,7 @@ const roles = [
 const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [contact, setContact] = useState(''); 
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState('Teacher');
   const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +49,16 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
       return;
     }
 
+    if(contact.length !== 10){
+      Toast.show({
+        type: 'warning',
+        text1: 'Please enter a valid contact number',
+        visibilityTime: 1500,
+        position: 'top',
+      });
+      return;
+    }
+
     if (!emailRegex.test(email)) {
       Toast.show({
         type: 'warning',
@@ -62,6 +73,7 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
       console.log('Registration Data:', {
         name,
         email,
+        contact,
         password,
         role: selectedRole,
       });
@@ -69,6 +81,7 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
       const response = await register({
         name,
         email,
+        contact,
         password,
         role: selectedRole === 'Teacher' ? 3 : 4,
       });
@@ -83,6 +96,7 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
         setName('');
         setEmail('');
+        setContact('');
         setPassword('');
         setSelectedRole('Teacher');
 
@@ -132,6 +146,26 @@ const SignUpScreen: React.FC<{navigation: any}> = ({navigation}) => {
               onChange={e => setEmail(e.nativeEvent.text)}
               placeholderTextColor="black"
               cursorColor="black"
+              keyboardType='email-address'
+            />
+          </View>
+
+          <View style={styles.action}>
+            <Fontisto
+              name="phone"
+              color="#420475"
+              size={24}
+              style={{marginLeft: 0, paddingRight: 5}}
+            />
+            <TextInput
+              placeholder="Contact No."
+              style={styles.textInput}
+              value={contact}
+              onChange={e => setContact(e.nativeEvent.text)}
+              placeholderTextColor="black"
+              cursorColor="black"
+              maxLength={10}
+              keyboardType='numeric'
             />
           </View>
 

@@ -50,11 +50,13 @@ export const logoutUser = async (token: string) => {
 export const register = async ({
   name,
   email,
+  contact,
   password,
   role,
 }: {
   name: string;
   email: string;
+  contact: string;
   password: string;
   role: number;
 }) => {
@@ -62,6 +64,7 @@ export const register = async ({
     const response = await api.post('register', {
       name: name,
       email: email,
+      contact_no: contact,
       password: password,
       role: role,
     });
@@ -313,5 +316,19 @@ export const placeOrder = async (token: string | null ,data:any ) => {
     return response.data;
   } catch (error) {
     console.log('API::PLACE ORDER::ERROR',error);
+  }
+}
+
+export const getReport = async (token: string | null ) => {
+  try {
+    const response = await api.get('school/reports',{
+      headers: {
+        Authorization : `Bearer ${token}`
+      }
+    })
+    return response.data;
+  } catch (error) {
+    console.log('API::GET REPORT::ERROR',error);
+    return error;
   }
 }

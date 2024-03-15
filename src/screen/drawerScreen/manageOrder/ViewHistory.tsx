@@ -49,33 +49,45 @@ const ViewHistory: React.FC<{navigation: any; route: any}> = ({
             <View style={styles.orderCard} key={element.id}>
               <View style={styles.details}>
                 <View style={styles.field}>
-                  <Text style={styles.label}>School Name :</Text>
+                  <Text style={styles.label}>School Name </Text>
+                  <Text style={styles.comma}>:</Text>
                   <Text style={styles.value} numberOfLines={1}>
                     {element.school}
                   </Text>
                 </View>
                 <View style={styles.field}>
-                  <Text style={styles.label}>Class Name :</Text>
+                  <Text style={styles.label}>Class Name </Text>
+                  <Text style={styles.comma}>:</Text>
                   <Text style={styles.value}>{element.class} </Text>
                 </View>
                 <View style={styles.field}>
-                  <Text style={styles.label}>Subject Name :</Text>
+                  <Text style={styles.label}>Subject Name </Text>
+                  <Text style={styles.comma}>:</Text>
                   <Text style={styles.value}>{element.subject}</Text>
                 </View>
                 <View style={styles.field}>
-                  <Text style={styles.label}>Actual Price :</Text>
-                  <Text style={styles.value}>₹ {element.mrp} </Text>
+                  <Text style={styles.label}>Actual Price (₹)</Text>
+                  <Text style={styles.comma}>:</Text>
+                  <Text style={styles.value}>₹{element.mrp} </Text>
                 </View>
                 <View style={styles.field}>
-                  <Text style={styles.label}>Quantity :</Text>
+                  <Text style={styles.label}>Quantity </Text>
+                  <Text style={styles.comma}>:</Text>
                   <Text style={styles.value}>{element.quantity}</Text>
                 </View>
                 <View style={styles.field}>
-                  <Text style={styles.label}>Discount :</Text>
+                  <Text style={styles.label}>Discount (%) </Text>
+                  <Text style={styles.comma}>:</Text>
                   <Text style={styles.value}>{element.discount===null ? `0` : element.discount}% </Text>
                 </View>
                 <View style={styles.field}>
-                  <Text style={styles.label}>SubTotal :</Text>
+                  <Text style={styles.label}>Donation (₹) </Text>
+                  <Text style={styles.comma}>:</Text>
+                  <Text style={styles.value}>₹{element.donation===null ? `0` : element.donation} </Text>
+                </View>
+                <View style={styles.field}>
+                  <Text style={styles.label}>SubTotal (₹)</Text>
+                  <Text style={styles.comma}>:</Text>
                   <Text style={styles.value}>
                     ₹{' '}
                     {calculateTotal(
@@ -127,24 +139,25 @@ const styles = StyleSheet.create({
     right: 10,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   details: {
     marginVertical: responsiveScreenHeight(2),
     marginHorizontal: responsiveScreenWidth(2),
   },
   field: {
-    display: 'flex',
+    // display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     marginVertical: responsiveScreenHeight(0.5),
+    
   },
   label: {
     fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'grey',
     marginEnd: 12,
-    maxWidth: '40%',
+    minWidth: responsiveScreenWidth(29),
   },
   value: {
     fontSize: responsiveFontSize(2),
@@ -152,8 +165,14 @@ const styles = StyleSheet.create({
     color: 'green',
     maxWidth: '50%',
     marginEnd: responsiveScreenWidth(2),
-    textAlign: 'right',
+    textAlign: 'left',
     flexWrap: 'wrap',
+  },
+  comma:{
+    fontSize: responsiveFontSize(2),
+    fontWeight: 'bold',
+    color: 'grey',
+    marginEnd: 5,
   },
   iconContainer: {
     flexDirection: 'row',

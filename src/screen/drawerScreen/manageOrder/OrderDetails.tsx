@@ -4,6 +4,7 @@ import Header from '../../../utils/Header';
 import {
   responsiveFontSize,
   responsiveScreenHeight,
+  responsiveScreenWidth,
 } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {TouchableOpacity} from 'react-native';
@@ -46,7 +47,7 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
     // Calculate the total amount based on the subtotals of all items
     const total: any = orderData.reduce(
       (sum: number, item: any) =>
-        sum + parseFloat(subTotal(item.mrp.mrp, item.quantity, item.discount)),
+        sum + parseFloat(subTotal(item.mrp.mrp, item.quantity, item.discount,item.donation)),
       0,
     );
     setTotalAmount(total.toFixed(2));
@@ -86,7 +87,7 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
       totalMRP: totalAmount,
       BookHistory: order,
     };
-    // console.log("Final Order Data",data)
+    console.log("Final Order Data",data)
     try {
       const token = await fetchtoken();
       const response = await placeOrder(token, data);
@@ -107,12 +108,12 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
     }
   };
 
-  const subTotal = (price_mrp: any, quantity: any, discount: any) => {
+  const subTotal = (price_mrp: any, quantity: any, discount: any,donation:any) => {
     const totalAmount = price_mrp * quantity;
     const discountAmount = totalAmount * (discount / 100);
     const finalAmount = totalAmount - discountAmount;
-    const roundedFinalAmount = finalAmount.toFixed(2);
-    return roundedFinalAmount.toString();
+    const roundedFinalAmount = finalAmount-donation;
+    return roundedFinalAmount.toFixed(2).toString();
   };
 
   const handleDeleteItem = (itemId: string) => {
@@ -198,7 +199,9 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
           {totalAmount > 0 ? (
             <Text style={styles.header}>Total Amount : ₹{totalAmount}</Text>
           ) : (
-            <Text style={styles.header}>No Order Details</Text>
+            <Text style={[styles.header, {alignSelf: 'center'}]}>
+              No Order Details
+            </Text>
           )}
 
           {orderData?.map((item: any, index: any) => (
@@ -212,32 +215,30 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                 />
               </View>
               <View style={styles.details}>
-                <View style={styles.field}>
-                  <Text style={styles.label}>School Name :</Text>
-                  <Text style={styles.value} numberOfLines={1}>
-                    {item?.SchoolItem.label}
-                  </Text>
+                <View style={styles.labelValueRow}>
+                  <Text style={styles.label}>School Name</Text>
+                  <Text style={styles.comma}>:</Text>
+                  <Text style={styles.value}>{item?.SchoolItem.label}</Text>
                 </View>
-                <View style={styles.field}>
-                  <Text style={styles.label}>Class Name :</Text>
-                  <Text style={styles.value}>{item?.ClassItem.label} </Text>
+                <View style={styles.labelValueRow}>
+                  <Text style={styles.label}>ClassName</Text>
+                  <Text style={styles.comma}>:</Text>
+                  <Text style={styles.value}>{item?.ClassItem.label}</Text>
                 </View>
-                <View style={styles.field}>
-                  <Text style={styles.label}>Subject Name :</Text>
-                  <Text
-                    style={styles.value}
-                    numberOfLines={1}
-                    ellipsizeMode={'tail'}>
-                    {item?.SubjecItem.label}
-                  </Text>
+                <View style={styles.labelValueRow}>
+                  <Text style={styles.label}>Subject Name</Text>
+                  <Text style={styles.comma}>:</Text>
+                  <Text style={styles.value}>{item?.SubjecItem.label}</Text>
                 </View>
-                <View style={styles.field}>
-                  <Text style={styles.label}>Actual Price :</Text>
-                  <Text style={styles.value}>₹ {item?.mrp.mrp} </Text>
+                <View style={styles.labelValueRow}>
+                  <Text style={styles.label}>Actual Price (₹)</Text>
+                  <Text style={styles.comma}>:</Text>
+                  <Text style={styles.value}>₹ {item?.mrp.mrp}</Text>
                 </View>
-                <View style={styles.field}>
-                  <Text style={styles.label}>Qunatity :</Text>
-                  <View style={styles?.iconContainer}>
+                <View style={styles.labelValueRow}>
+                  <Text style={styles.label}>Quantity</Text>
+                  <Text style={styles.comma}>:</Text>
+                  <View style={styles.iconContainer}>
                     <TouchableOpacity
                       onPress={() =>
                         handleQuantityUpdate(item?.id, item?.quantity, 'sub')
@@ -245,7 +246,7 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                       style={[styles.circleIcon, {marginEnd: 15}]}>
                       <Icon name="horizontal-rule" size={20} color="black" />
                     </TouchableOpacity>
-                    <Text style={styles.value}>{item?.quantity}</Text>
+                    <Text style={styles.qunatityValue}>{item?.quantity}</Text>
                     <TouchableOpacity
                       style={[styles.circleIcon, {marginStart: 15}]}
                       onPress={() =>
@@ -255,16 +256,25 @@ const OrderDetails: React.FC<{navigation: any}> = ({navigation}) => {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <View style={styles.field}>
-                  <Text style={styles.label}>Discount (%) :</Text>
+                <View style={styles.labelValueRow}>
+                  <Text style={styles.label}>Discount (%)</Text>
+                  <Text style={styles.comma}>:</Text>
                   <Text style={styles.value}>
-                    {item.discount === '' ? '0' : item?.discount}%{' '}
+                    {item.discount === '' ? '0' : item?.discount}%
                   </Text>
                 </View>
-                <View style={styles.field}>
-                  <Text style={styles.label}>SubTotal :</Text>
-                  <Text style={styles?.value}>
-                    ₹ {subTotal(item?.mrp?.mrp, item?.quantity, item?.discount)}{' '}
+                <View style={styles.labelValueRow}>
+                  <Text style={styles.label}>Donation (₹)</Text>
+                  <Text style={styles.comma}>:</Text>
+                  <Text style={styles.value}>
+                    ₹{item.donation === '' ? '0' : item?.donation}
+                  </Text>
+                </View>
+                <View style={styles.labelValueRow}>
+                  <Text style={styles.label}>SubTotal (₹)</Text>
+                  <Text style={styles.comma}>:</Text>
+                  <Text style={styles.value}>
+                    ₹ {subTotal(item?.mrp?.mrp, item?.quantity, item?.discount,item?.donation)}
                   </Text>
                 </View>
               </View>
@@ -303,6 +313,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: 'green',
+    alignSelf: 'center',
+    marginHorizontal: responsiveScreenHeight(2.5),
   },
   orderCard: {
     width: '90%',
@@ -325,33 +337,47 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginHorizontal: 10,
   },
-  field: {
-    display: 'flex',
+  labelValueRow: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
-    marginVertical: 5,
+    alignItems: 'flex-start',
+    marginBottom: 8,
   },
   label: {
     fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'grey',
-    marginEnd: 12,
-    alignItems: 'flex-start',
+    marginRight: 4,
+    minWidth: responsiveScreenWidth(30),
+  },
+  comma: {
+    fontSize: responsiveFontSize(2),
+    color: 'grey',
+    marginRight: 4,
   },
   value: {
     fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
     color: 'green',
-    maxWidth: '67%',
-    alignSelf: 'flex-end',
-    marginStart: 'auto',
-    // textAlign: 'right',
+    flex: 1,
+    flexWrap: 'wrap',
   },
   iconContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    marginStart: 'auto',
+    // alignItems: 'center',
+    // justifyContent: 'space-between',
+    // marginStart: 'auto',
+    fontSize: responsiveFontSize(2),
+    fontWeight: 'bold',
+    color: 'green',
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+  qunatityValue: {
+    fontSize: responsiveFontSize(2),
+    fontWeight: 'bold',
+    color: 'green',
+    // flex: 1,
+    // flexWrap: 'wrap',
   },
   circleIcon: {
     borderWidth: 1,

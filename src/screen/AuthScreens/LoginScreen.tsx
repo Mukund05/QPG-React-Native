@@ -36,14 +36,17 @@ const RememberMeCheckbox: React.FC<RememberMeCheckboxProps> = ({
   checked,
   onPress,
 }) => (
-  <TouchableOpacity onPress={onPress}>
-    <View style={[styles.checkboxContainer, checked && styles.checked]}>
+  <View >
+    <TouchableOpacity style={[styles.checkboxContainer, checked && styles.checked]} onPress={onPress}>
       <View style={[styles.checkbox, checked && styles.checked]}>
         {checked && <Text style={styles.checkmark}>&#10003;</Text>}
       </View>
       <Text style={styles.remember}>Remember Me</Text>
-    </View>
-  </TouchableOpacity>
+    </TouchableOpacity>
+    {/* <TouchableOpacity>
+      <Text style={styles.forgotPassword}>Forgot Password?</Text>
+    </TouchableOpacity> */}
+  </View>
 );
 
 // LoadingIndicator Component
@@ -121,14 +124,14 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
   };
 
   useEffect(() => {
-    setTimeout(()=>{
+    setTimeout(() => {
       SplashScreen.hide();
-    },1100)
+    }, 1100);
 
     //Validate past login details and if valid then navigate to dashboard
     const checkUserCredentials = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         const token = await fetchtoken();
         const user = await fetchUser();
 
@@ -143,15 +146,18 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
               routes: [{name: 'DashBoard'}],
             });
           } catch (error) {
-            Alert.alert('Session Expire', 'User Login Session Expired. Please Relogin!');
-            
+            Alert.alert(
+              'Session Expire',
+              'User Login Session Expired. Please Relogin!',
+            );
+
             await AsyncStorage.removeItem('user');
             await AsyncStorage.removeItem('token');
             navigation.reset({
               index: 0,
               routes: [{name: 'LoginScreen'}],
             });
-            setLoading(false)
+            setLoading(false);
           }
         }
       } catch (error) {
@@ -325,7 +331,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: responsiveScreenHeight(2),
-    width: responsiveScreenWidth(100),
+    width: responsiveScreenWidth(30),
   },
   checkbox: {
     width: responsiveScreenWidth(5),

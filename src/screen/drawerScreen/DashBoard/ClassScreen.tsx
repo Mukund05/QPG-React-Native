@@ -6,17 +6,25 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  FlatList,
+  ViewToken,
 } from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {getClasses} from '../../../api/api';
 import {fetchtoken} from '../../../utils/fetchItem';
 import Header from '../../../utils/Header';
-import { responsiveFontSize, responsiveScreenHeight } from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveScreenHeight,
+} from 'react-native-responsive-dimensions';
+import {ListItem} from '../../../Animation/ListItem';
+import {useSharedValue} from 'react-native-reanimated';
 
 const ClassesScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [classes, setClasses] = useState<
     {ClassID: string; ClassName: string}[]
   >([]);
+  const viewableItems = useSharedValue<ViewToken[]>([]);
   // const [loader, setLoader] = React.useState<boolean>(false);
 
   useEffect(() => {
@@ -36,8 +44,8 @@ const ClassesScreen: React.FC<{navigation: any}> = ({navigation}) => {
     fetchClass();
   }, []);
 
-  const handleClassPress = (classId: string,className:string) => {
-    navigation.navigate('Subjects', {classId,className});
+  const handleClassPress = (classId: string, className: string) => {
+    navigation.navigate('Subjects', {classId, className});
   };
 
   // if (loader) {
@@ -56,13 +64,13 @@ const ClassesScreen: React.FC<{navigation: any}> = ({navigation}) => {
         onPressLeftIcon={() => navigation.goBack()}
         bgColor="blue"
       />
-      <ScrollView>
+      {/* <ScrollView>
         <View style={styles.container}>
           {classes?.map(item => (
             <TouchableOpacity
               key={item.ClassID}
               style={styles.item}
-              onPress={() => handleClassPress(item.ClassID,item.ClassName)}>
+              onPress={() => handleClassPress(item.ClassID, item.ClassName)}>
               <FontAwesome5Icon
                 style={styles.icon}
                 name="book"
@@ -73,7 +81,23 @@ const ClassesScreen: React.FC<{navigation: any}> = ({navigation}) => {
             </TouchableOpacity>
           ))}
         </View>
-      </ScrollView>
+      </ScrollView> */}
+      <FlatList
+        data={classes}
+        contentContainerStyle={{paddingVertical: 20}}
+        onViewableItemsChanged={({viewableItems: vItems}) => {
+          viewableItems.value = vItems;
+        }}
+        renderItem={({item}) => {
+          return (
+            <ListItem
+              item={item}
+              viewableItems={viewableItems}
+              handleClassPress={handleClassPress}
+            />
+          );
+        }}
+      />
     </>
   );
 };
@@ -83,7 +107,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop:'5%'
+    marginTop: '5%',
   },
   item: {
     backgroundColor: '#A1EEBD',

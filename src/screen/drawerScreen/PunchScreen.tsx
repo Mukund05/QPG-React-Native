@@ -173,12 +173,15 @@ const PunchScreen: React.FC<PunchScreenProps> = ({navigation}) => {
     // console.log(coords)
     const {id} = await fetchUser();
     const token = await fetchtoken();
-    console.log('punchOut time ', punchOutTime);
+    // console.log('punchOut time ', punchOutTime);
+    const isPunchIn = await AsyncStorage.getItem('punchIn');
+    console.log(timer);
     const data = {
       user_id: id,
       coors: JSON.stringify(coords),
       inTime: timeModifier(dateTime),
-      outTime: timeModifier(punchOutTime),
+      outTime: !isPunchIn && timeModifier(punchOutTime),
+      total_time: !isPunchIn && timer,
     };
     console.log('Data to be sent :: ', data);
     try {

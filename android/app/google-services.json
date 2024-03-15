@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "112096781940",
+    "project_id": "bestwaylearning-test",
+    "storage_bucket": "bestwaylearning-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112096781940:android:2ab29e711b61b0ca9c1321",
+        "android_client_info": {
+          "package_name": "com.bst.bestwaylearning_Test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoEe5CXEg38hcukkq_lywC3kJf6Ks-viQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

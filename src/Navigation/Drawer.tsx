@@ -17,7 +17,7 @@ import {
   Help,
   ShareApp,
 } from '../screen/drawerScreen/Index';
-import {DrawerActions, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Avatar, Title} from 'react-native-paper';
@@ -43,7 +43,12 @@ import SubmitReport from '../screen/drawerScreen/SubmitReport';
 import ViewSchool from '../screen/drawerScreen/manageSchool/ViewSchool';
 import EditSchool from '../screen/drawerScreen/manageSchool/EditSchool';
 import Toast from 'react-native-toast-message';
-import { responsiveFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from 'react-native-responsive-dimensions';
+import ReportDetails from '../screen/drawerScreen/ReportDetails';
 
 const Drawer = createDrawerNavigator();
 
@@ -68,6 +73,11 @@ const DrawerList: DrawerItem[] = [
     label: 'Manage Order',
     icon: 'edit-3',
     navigateTo: 'Order History',
+  },
+  {
+    label: 'Report Details',
+    icon: 'file-text',
+    navigateTo: 'Report Details',
   },
   {
     label: 'Manage School',
@@ -200,10 +210,7 @@ const DrawerItemList: React.FC = () => {
         />
       );
     } else {
-      if (
-        item.label === 'Manage Order' ||
-        item.label === 'Manage School'
-      ) {
+      if (item.label === 'Manage Order' || item.label === 'Manage School' || item.label === 'Report Details') {
         return null;
       } else {
         return (
@@ -222,7 +229,6 @@ const DrawerItemList: React.FC = () => {
 const Stack = createNativeStackNavigator();
 
 const StackNavigation = () => {
-  const navigation = useNavigation();
   return (
     <Stack.Navigator
       initialRouteName="Dashboard"
@@ -249,11 +255,12 @@ const StackNavigation = () => {
       <Stack.Screen name="Order Page" component={OrderPage} />
       <Stack.Screen name="Order Details" component={OrderDetails} />
       <Stack.Screen name="Add School" component={AddSchool} />
-      <Stack.Screen name='Order History' component={OrderHistory} />
-      <Stack.Screen name='View History' component={ViewHistory} />
-      <Stack.Screen name='SubmitReport' component={SubmitReport} />
-      <Stack.Screen name='View Schools' component={ViewSchool} />
-      <Stack.Screen name='Edit School' component={EditSchool} />
+      <Stack.Screen name="Order History" component={OrderHistory} />
+      <Stack.Screen name="View History" component={ViewHistory} />
+      <Stack.Screen name="SubmitReport" component={SubmitReport} />
+      <Stack.Screen name="View Schools" component={ViewSchool} />
+      <Stack.Screen name="Edit School" component={EditSchool} />
+      <Stack.Screen name="Report Details" component={ReportDetails} />
     </Stack.Navigator>
   );
 };

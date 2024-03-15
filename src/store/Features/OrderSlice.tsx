@@ -23,6 +23,8 @@ const orderSlice = createSlice({
       if (existingItem) {
         // If the item already exists, update its quantity
         existingItem.quantity += newItem.quantity;
+        existingItem.discount += newItem.discount;
+        existingItem.donation += newItem.donation;
       } else {
         // If the item doesn't exist, add it
         state.order.push(newItem);

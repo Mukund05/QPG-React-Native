@@ -9,7 +9,7 @@ import {
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { useSelector } from 'react-redux';
 const {width, height} = Dimensions.get('window');
 
 interface HeaderProps {
@@ -33,6 +33,8 @@ const Header: React.FC<HeaderProps> = ({
   headerTitleColor,
   children,
 }) => {
+  const user = useSelector((state:any) => state.user);
+  // console.log(user.user)
   return (
     <SafeAreaView>
       <View
@@ -56,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({
           style={{marginLeft: 'auto'}}
           onPress={onPressRightIcon}
         />
-        {children}
+        {(user.user.role_id!==0 && user.user.role_id!==1) && children}
       </View>
     </SafeAreaView>
   );

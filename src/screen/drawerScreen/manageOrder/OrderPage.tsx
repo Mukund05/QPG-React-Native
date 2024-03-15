@@ -23,6 +23,7 @@ import {
 import {
   responsiveFontSize,
   responsiveHeight,
+  responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {useDispatch} from 'react-redux';
 import {addOrder} from '../../../store/Features/OrderSlice';
@@ -50,6 +51,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
   const [total, setTotal] = useState<string>('');
   const [triggerEffect, setTriggerEffect] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  const [donation, setDonation] = useState('');
 
   const handleReset = () => {
     // Increment the resetKey to trigger a re-render with initial state
@@ -142,11 +144,11 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
   useEffect(() => {
     const totalAmount = price?.mrp * quantity;
     const discountAmount = totalAmount * (discount / 100);
-    const finalAmount = totalAmount - discountAmount;
+    const finalAmount = totalAmount - discountAmount - Number(donation);
     // console.log('TOTAL AMOUNT',finalAmount);
     const roundedFinalAmount = finalAmount.toFixed(2);
     setTotal(roundedFinalAmount.toString());
-  }, [discount, quantity, price]);
+  }, [discount, quantity, price, donation]);
 
   useEffect(() => {
     // Reset all states when the resetKey changes
@@ -156,6 +158,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     setDiscount('');
     setPrice('');
     setQuantity('1');
+    setDonation('');
     setTotal('');
     setTriggerEffect(prevValue => !prevValue);
   }, [resetKey]);
@@ -182,6 +185,10 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
       return;
     }
 
+    if (Number(donation) > Number(total)) {
+      Alert.alert('Enter Valid Donation Amount!');
+      return
+    }
     const data = createData();
 
     // Retrieve existing data from AsyncStorage based on the user ID
@@ -206,6 +213,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
           // If the item already exists, update its quantity and discount
           newData[existingItemIndex].quantity += data.quantity;
           newData[existingItemIndex].discount = data.discount;
+          newData[existingItemIndex].donation = data.donation;
         } else {
           // If the item does not exist, add it to the array
           newData.push(data);
@@ -260,8 +268,9 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
     };
 
     (data['quantity'] = Number(quantity)),
-      (data['discount'] = discount),
-      (data['mrp'] = price);
+    (data['donation'] = Number(donation)),
+    (data['discount'] = discount),
+    (data['mrp'] = price);
     return data;
   };
 
@@ -284,7 +293,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
   const schoolSheetRef: any = useRef();
   const classSheetRef: any = useRef();
   const subjectSheetRef: any = useRef();
-
+  
   return (
     <>
       <Header
@@ -294,11 +303,17 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
         bgColor="blue"
         children={
           <TouchableOpacity
-            onPress={() => navigation.navigate('Order Details')}>
-            <View style={{marginRight: 10}}>
-              <Icon name="shopping-cart" size={25} color="white" />
-            </View>
-          </TouchableOpacity>
+          onPress={() => navigation.navigate('Order Details')}>
+          {/* <View style={{marginRight: 10}}> */}
+          <Icon
+            name="shopping-cart"
+            size={35}
+            color="white"
+            style={{marginLeft: 'auto', marginRight: responsiveWidth(2)}}
+          />
+          {/* </View> */}
+          <Text style={styles.itemCount}>{7}</Text>
+        </TouchableOpacity>
         }
       />
       <ScrollView
@@ -311,7 +326,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
               <Text style={styles.label}>School Name</Text>
-              <Icon name="school" size={26} color="black" style={styles.icon} />
+              {/* <Icon name="school" size={26} color="black" style={styles.icon} /> */}
             </View>
             {/* add school list using react native raw bottom sheet */}
             <TouchableOpacity onPress={() => schoolSheetRef.current?.open()}>
@@ -334,7 +349,8 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                 container: {
                   backgroundColor: '#113946',
                   borderBlockColor: 'black',
-                  borderTopWidth: 2,
+                  // borderTopWidth: 2,
+                  borderRadius: 40,
                 },
               }}>
               <ScrollView>
@@ -356,7 +372,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
               <Text style={styles.label}>Class</Text>
-              <Icon name="class" size={26} color="black" style={styles.icon} />
+              {/* <Icon name="class" size={26} color="black" style={styles.icon} /> */}
             </View>
             {/* add class list using react native raw bottom sheet */}
             <TouchableOpacity onPress={() => classSheetRef.current?.open()}>
@@ -379,9 +395,10 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                 container: {
                   backgroundColor: '#113946',
                   borderBlockColor: 'black',
-                  borderTopWidth: 2,
+                  // borderTopWidth: 2,
                   height: '35%',
                   paddingVertical: 10,
+                  borderRadius: 40,
                 },
               }}>
               <ScrollView>
@@ -404,12 +421,12 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
               <Text style={styles.label}>Subject</Text>
-              <Icon
+              {/* <Icon
                 name="subject"
                 size={26}
                 color="black"
                 style={styles.icon}
-              />
+              /> */}
             </View>
             {/* add school list using react native raw bottom sheet */}
             <TouchableOpacity
@@ -434,9 +451,10 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                 container: {
                   backgroundColor: '#113946',
                   borderBlockColor: 'black',
-                  borderTopWidth: 2,
+                  // borderTopWidth: 2,
                   height: '40%',
                   paddingVertical: 10,
+                  borderRadius: 40,
                 },
               }}>
               <ScrollView>
@@ -459,12 +477,12 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
               <Text style={styles.label}>Discount (%)</Text>
-              <Icon
+              {/* <Icon
                 name="discount"
                 size={26}
                 color="black"
                 style={styles.icon}
-              />
+              /> */}
             </View>
 
             <TouchableOpacity>
@@ -475,6 +493,23 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                 value={discount}
                 maxLength={2}
                 onChangeText={setDiscount}
+                keyboardType="numeric"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Donation ( ₹ )</Text>
+            </View>
+
+            <TouchableOpacity>
+              <TextInput
+                placeholder="Enter Donation"
+                placeholderTextColor="grey"
+                style={styles.input}
+                value={donation}
+                onChangeText={setDonation}
                 keyboardType="numeric"
               />
             </TouchableOpacity>
@@ -550,6 +585,15 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                         Discount :
                       </Text>
                     )}
+                    {donation && (
+                      <Text
+                        style={[
+                          styles.tableCellText,
+                          {fontSize: responsiveFontSize(2), fontWeight: '500'},
+                        ]}>
+                        Donation :
+                      </Text>
+                    )}
                   </View>
                   <View style={styles.tableCell}>
                     <Text
@@ -568,6 +612,15 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
                         {discount ? discount : 0}%
                       </Text>
                     )}
+                    {donation && (
+                      <Text
+                        style={[
+                          styles.tableCellText,
+                          {fontSize: responsiveFontSize(2), fontWeight: '500'},
+                        ]}>
+                        {donation ? donation : 0} ₹
+                      </Text>
+                    )}
                   </View>
                 </View>
               </View>
@@ -575,7 +628,7 @@ const OrderPage: React.FC<{navigation: any}> = ({navigation}) => {
               <View style={styles.finalPrice}>
                 <Text style={styles.subtotal}>
                   TOTAL AMOUNT :{' '}
-                  {total !== 'NaN' ? `₹ ${total}` : 'Invalid Price'}
+                  {total !== 'NaN' ? `₹ ${Number(total)>0 ? total:0}` : 'Invalid Price'}
                 </Text>
               </View>
             </View>
@@ -747,6 +800,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+  },
+  itemCount: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: 'red',
+    borderRadius: 50,
+    color: 'white',
+    width: 20,
+    height: 20,
+    textAlign: 'center',
+    fontSize: responsiveFontSize(1.5),
   },
 });
 

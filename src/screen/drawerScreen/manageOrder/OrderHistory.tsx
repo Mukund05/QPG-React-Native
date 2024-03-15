@@ -64,6 +64,8 @@ const OrderHistory: React.FC<{navigation: any}> = ({navigation}) => {
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchOrders();
+    setSelectedStatus(null)
+    setSearchTerm('');
     setRefreshing(false);
   };
 

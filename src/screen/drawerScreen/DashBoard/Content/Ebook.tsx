@@ -9,8 +9,8 @@ const Ebook: React.FC<{route: any; navigation: any}> = ({
   navigation,
 }) => {
   // const Ebooks = undefined;
-  const {ebook} = route.params;
-  // console.log(ebook);
+  const {data} = route.params;
+  // console.log("ebook screen",data);
 
   return (
     <>
@@ -23,9 +23,9 @@ const Ebook: React.FC<{route: any; navigation: any}> = ({
         onPressRightIcon={() => navigation.navigate('Dashboard')}
       />
       <ScrollView style={styles.container}>
-        {ebook.length > 0 ? (
+        {data ? (
           <View style={styles.pdfContainer}>
-            <PDFViewer pdfs={ebook} navigation={navigation} screen={'book'} />
+            <PDFViewer pdfs={data} navigation={navigation} screen={'book'} />
           </View>
         ) : (
           <View>

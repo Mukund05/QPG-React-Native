@@ -8,6 +8,7 @@ import {
   ScrollView,
   Platform,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -21,6 +22,7 @@ import {setUser} from '../../../store/Features/UserSlice';
 import Header from '../../../utils/Header';
 import Toast from 'react-native-toast-message';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import RNScreenshotPrevent from 'react-native-screenshot-prevent';
 
 const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const dispatch = useDispatch();
@@ -149,7 +151,15 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
       console.log('Camera Permission Error:', error);
     }
   };
-
+  //prevent taking screenshot
+  RNScreenshotPrevent.enabled(true)
+  if (!__DEV__) RNScreenshotPrevent.enableSecureView()
+  useEffect(()=>{
+    return () => {
+      RNScreenshotPrevent.enabled(false)
+      if (!__DEV__) RNScreenshotPrevent.disableSecureView()
+    }
+  },[])
   return (
     <SafeAreaView>
       <Header
